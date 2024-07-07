@@ -1,0 +1,13 @@
+{
+  "name": "tiny-tails-place-fe",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:user": "yarn workspace user-web dev",
+    "dev:admin": "yarn workspace admin-web dev",
+    "build:user": "yarn workspace user-web build",
+    "build:admin": "yarn workspace admin-web build"
+  }
+}
