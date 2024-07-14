@@ -8,3 +8,4 @@ const LoginModal = ({isLoginOpen ,setIsLoginOpen}) => {
       </Dialog>
   );
 }
+export default LoginModal;
