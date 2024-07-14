@@ -22,6 +22,9 @@ const Header = () => {
                     <Input type="search" placeholder="Search" className="w-full pl-8"/>
                 </div>
                 <Button variant="secondary">Book Now</Button>
+                <Button variant="outline" >
+                    Login
+                </Button>
                 <Avatar>
                     <AvatarImage src="/placeholder-user.jpg"/>
                     <AvatarFallback>U</AvatarFallback>
