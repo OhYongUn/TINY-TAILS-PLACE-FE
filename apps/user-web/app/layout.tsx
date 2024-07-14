@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cn } from '@/lib/utils'
-
 import "./globals.css";
-import Header from "@/_components/layout/Header";
-import Footer from "@/_components/layout/Footer";
+import {ReactNode} from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 const fontHeading = Inter({
@@ -23,7 +21,7 @@ export const metadata: Metadata = {
   description: "Tiny Tails Place",
 };
 
-export default function Layout({ children }) {
+export default function RootLayout({children}: Readonly<{ children: ReactNode }>) {
     return (
         <html lang="en">
             <body
