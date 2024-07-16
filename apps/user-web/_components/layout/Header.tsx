@@ -25,7 +25,9 @@ const Header = () => {
                         <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"/>
                         <Input type="search" placeholder="Search" className="w-full pl-8"/>
                     </div>
-                    <Button variant="secondary">Book Now</Button>
+                    <Link href="/booking">
+                            <Button variant="secondary">Book Now</Button>
+                    </Link>
                     <Button variant="outline" onClick={() => setIsLoginOpen(true)}>
                         Login
                     </Button>
