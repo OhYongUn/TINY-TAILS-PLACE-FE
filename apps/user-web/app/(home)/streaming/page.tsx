@@ -1,89 +1,78 @@
 import {Button} from "@/components/ui/button";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Input} from "@/components/ui/input";
-import {CalendarIcon, CreditCardIcon, HomeIcon, PawPrintIcon, PlayIcon, SlashIcon} from "@/_components/icons";
+import {
+    CalendarIcon,
+    CreditCardIcon,
+    HomeIcon,
+    PawPrintIcon,
+    PlayIcon,
+    SlashIcon,
+    UsersIcon
+} from "@/_components/icons";
 
-const StreamingHome = () => {
-  return (
-      <div className="min-h-screen bg-gray-50">
-          <main className="flex flex-col items-center p-4 md:flex-row md:justify-between md:p-8">
-              <section className="w-full md:w-2/3">
-                  <h2 className="mb-4 text-2xl font-bold">Live Feed</h2>
-                  <div className="relative w-full h-64 bg-blue-500">
-                      <PlayIcon
-                          className="absolute w-12 h-12 text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"/>
-                  </div>
-                  <Button variant="outline" className="mt-4">
-                      View Larger
-                  </Button>
-                  <div className="mt-8">
-                      <h3 className="mb-2 text-lg font-semibold">Chat with us</h3>
-                      <div className="flex items-start space-x-2">
-                          <Avatar>
-                              <AvatarImage src="/placeholder-user.jpg"/>
-                              <AvatarFallback>PH</AvatarFallback>
-                          </Avatar>
-                          <div className="p-2 bg-white rounded-md shadow">
-                              <p className="text-sm font-medium">Pet hotel</p>
-                              <p className="text-sm">Hello! How can we help you today?</p>
-                          </div>
-                      </div>
-                      <div className="flex items-center mt-4">
-                          <Input placeholder="Type your message here" className="flex-1"/>
-                          <Button className="ml-2">Send</Button>
-                      </div>
-                  </div>
-              </section>
-              <aside className="w-full mt-8 md:w-1/3 md:mt-0">
-                  <h3 className="mb-4 text-lg font-semibold">Reservation</h3>
-                  <div className="space-y-4">
-                      <div className="flex items-center p-4 bg-white rounded-md shadow">
-                          <CalendarIcon className="w-5 h-5 text-gray-700"/>
-                          <div className="ml-4">
-                              <p className="font-medium">Christmas Day</p>
-                              <p className="text-sm text-gray-500">Check-in: 12/25/2022</p>
-                          </div>
-                      </div>
-                      <div className="flex items-center p-4 bg-white rounded-md shadow">
-                          <CalendarIcon className="w-5 h-5 text-gray-700"/>
-                          <div className="ml-4">
-                              <p className="font-medium">New Year's Eve</p>
-                              <p className="text-sm text-gray-500">Check-out: 12/31/2022</p>
-                          </div>
-                      </div>
-                      <div className="flex items-center p-4 bg-white rounded-md shadow">
-                          <PawPrintIcon className="w-5 h-5 text-gray-700"/>
-                          <div className="ml-4">
-                              <p className="font-medium">Pets</p>
-                              <p className="text-sm text-gray-500">2 dogs, 1 cat</p>
-                          </div>
-                      </div>
-                      <div className="flex items-center p-4 bg-white rounded-md shadow">
-                          <HomeIcon className="w-5 h-5 text-gray-700"/>
-                          <div className="ml-4">
-                              <p className="font-medium">Room</p>
-                              <p className="text-sm text-gray-500">Standard suite</p>
-                          </div>
-                      </div>
-                      <div className="flex items-center p-4 bg-white rounded-md shadow">
-                          <SlashIcon className="w-5 h-5 text-gray-700"/>
-                          <div className="ml-4">
-                              <p className="font-medium">Add playtime</p>
-                              <p className="text-sm text-gray-500">No</p>
-                          </div>
-                      </div>
-                      <div className="flex items-center p-4 bg-white rounded-md shadow">
-                          <CreditCardIcon className="w-5 h-5 text-gray-700"/>
-                          <div className="ml-4">
-                              <p className="font-medium">Total</p>
-                              <p className="text-sm text-gray-500">$500</p>
-                          </div>
-                      </div>
-                  </div>
-              </aside>
-          </main>
-      </div>
-  );
+const StreamingPage = () => {
+    return (
+            <div className="flex-1 flex flex-col md:flex-row">
+                <div className="flex-1 bg-muted overflow-hidden relative order-2 md:order-1">
+                    <video
+                        className="w-full h-full object-cover"
+                        src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                        controls
+                    />
+                    <div
+                        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4 text-white">
+                        <div className="flex items-center justify-between">
+                            <div className="text-lg font-semibold">Acme Streamer</div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <UsersIcon className="w-4 h-4"/>
+                                <div>1,234 viewers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-muted border-l w-full md:w-80 flex flex-col order-1 md:order-2">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div className="flex items-start gap-3">
+                            <img src="/placeholder.svg" width={40} height={40} alt="User Avatar"
+                                 className="rounded-full"/>
+                            <div>
+                                <div className="font-medium">John Doe</div>
+                                <div className="text-sm text-muted-foreground">Hey, great stream!</div>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <img src="/placeholder.svg" width={40} height={40} alt="User Avatar"
+                                 className="rounded-full"/>
+                            <div>
+                                <div className="font-medium">Jane Smith</div>
+                                <div className="text-sm text-muted-foreground">Loving the content!</div>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <img src="/placeholder.svg" width={40} height={40} alt="User Avatar"
+                                 className="rounded-full"/>
+                            <div>
+                                <div className="font-medium">Bob Johnson</div>
+                                <div className="text-sm text-muted-foreground">Keep it up!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="border-t p-4">
+                        <form className="flex gap-2">
+                            <Input
+                                type="text"
+                                placeholder="Send a message..."
+                                className="flex-1 bg-background rounded-md px-3 py-2 text-sm"
+                            />
+                            <Button type="submit" variant="outline">
+                                Send
+                            </Button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    );
 
 }
-export default StreamingHome;
+export default StreamingPage;
