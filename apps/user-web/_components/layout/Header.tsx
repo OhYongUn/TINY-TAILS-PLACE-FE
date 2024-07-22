@@ -7,9 +7,11 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/_components/ui/avatar";
 import Link from "next/link";
 import {PawPrintIcon, SearchIcon} from "@/_components/icons";
 import LoginModal from "@/app/(home)/_compontents/loginModal";
+import SighUpModal from "@/app/(home)/_compontents/sighUpModal";
 
 const Header = () => {
     const [isLoginOpen, setIsLoginOpen] = useState(false)
+    const [isSighUpOpen, setIsSignUpOpen] = useState(false)
 
     return (
         <>
@@ -37,8 +39,8 @@ const Header = () => {
                     </Avatar>
                 </div>
             </header>
-            <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen}/>
-
+            <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen}/>
+            <SighUpModal isSighUpOpen={isSighUpOpen} setIsSignUpOpen={setIsSignUpOpen}/>
         </>
     );
 };
