@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FieldPathValue } from "react-hook-form";
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/_components/ui/button";
 import { Label } from "@/_components/ui/label";
@@ -16,7 +16,7 @@ type SignUpFormValues = {
 };
 
 const SignUp = () => {
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignUpFormValues>();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<SignUpFormValues>();
     const [phone, setPhone] = useState("");
 
     const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,19 +27,17 @@ const SignUp = () => {
         if (match) {
             const formatted = `${match[1]}${match[2] ? '-' + match[2] : ''}${match[3] ? '-' + match[3] : ''}`;
             setPhone(formatted); // 상태 업데이트
-            setValue("phone", formatted); // React Hook Form의 값 업데이트
-            event.target.maxLength = formatted.length; // 현재 입력된 형식의 길이에 맞춰 maxLength 설정
+            setValue("phone", formatted as FieldPathValue<SignUpFormValues, "phone">); // React Hook Form의 값 업데이트
+            event.target.maxLength = 13; // 최대 입력 가능한 길이 설정 (예: "010-1234-5678")
         } else {
             setPhone(value); // 상태 업데이트
-            event.target.maxLength = 13; // 최대 입력 가능한 길이 설정 (예: "010-1234-5678")
+            event.target.maxLength = 13; // 최대 입력 가능한 길이 설정
         }
     };
 
-
     const onSubmit: SubmitHandler<SignUpFormValues> = async data => {
         try {
-            const response = await axios.post('http://localhost:3000/api/auth/signup', data);
-            console.log('회원가입 성공:', response.data);
+            const response = await axios.post('http://localhost:3000/auth/signup', data);
         } catch (error) {
             console.error('회원가입 실패:', error.response?.data || error.message);
         }
