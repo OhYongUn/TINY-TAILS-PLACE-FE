@@ -7,8 +7,8 @@ module.exports = {
   extends: ["eslint:recommended", "prettier", "turbo"],
   plugins: ["only-warn"],
   globals: {
-    React: true,
-    JSX: true,
+    React: "readonly",
+    JSX: "readonly",
   },
   env: {
     node: true,
@@ -21,7 +21,6 @@ module.exports = {
     },
   },
   ignorePatterns: [
-    // Ignore dotfiles
     ".*.js",
     "node_modules/",
     "dist/",
