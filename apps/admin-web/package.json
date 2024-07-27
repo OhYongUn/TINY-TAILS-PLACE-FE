@@ -6,6 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/eslint": "^9",
+    "eslint": "^9.8.0"
   }
 }

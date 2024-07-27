@@ -6,13 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check-types": "tsc --noEmit"
   },
-  "dependencies": {
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.408.0",
-    "tailwind-merge": "^2.4.0",
-    "tailwindcss-animate": "^1.0.7"
+  "devDependencies": {
+    "@types/eslint": "^9",
+    "eslint": "^9.8.0",
+    "@tins-tails-place/eslint-config": "*"
   }
 }

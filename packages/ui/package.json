@@ -1,0 +1,11 @@
+{
+  "name": "@tiny-tails-place/ui",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint ."
+
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@tiny-tails-place/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@vercel/style-guide": "latest",
+    "eslint-config-turbo": "latest"
+  }
+}
