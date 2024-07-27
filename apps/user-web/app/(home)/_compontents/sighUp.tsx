@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler, FieldPathValue } from "react-hook-form";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/_components/ui/dialog";
 import { Button } from "@/_components/ui/button";
 import { Label } from "@/_components/ui/label";
 import { Input } from "@/_components/ui/input";

@@ -1,11 +1,12 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { createRequire } from 'module';
 
 const environment = process.env.NODE_ENV;
 
 if (environment === 'development') {
-    require('dotenv').config({ path: '.env.dev' });
+    dotenv.config({ path: '.env.dev' });
 } else if (environment === 'production') {
-    require('dotenv').config({ path: '.env.prod' });
+    dotenv.config({ path: '.env.prod' });
 }
 
 /** @type {import('next').NextConfig} */

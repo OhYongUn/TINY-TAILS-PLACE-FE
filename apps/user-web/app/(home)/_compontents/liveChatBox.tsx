@@ -1,5 +1,5 @@
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
+import {Input} from "@/_components/ui/input";
+import {Button} from "@/_components/ui/button";
 
 const LiveChatBox = () => {
   return (

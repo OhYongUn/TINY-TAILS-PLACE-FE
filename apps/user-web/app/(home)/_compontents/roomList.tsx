@@ -1,8 +1,8 @@
 "use client";
 
 
-import {Card, CardContent} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
+import {Card, CardContent} from "@/_components/ui/card";
+import {Button} from "@/_components/ui/button";
 import {PawPrintIcon} from "@/_components/icons";
 
 

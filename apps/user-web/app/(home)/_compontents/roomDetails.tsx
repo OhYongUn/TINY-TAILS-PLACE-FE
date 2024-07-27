@@ -8,8 +8,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger
-} from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
+} from "@/_components/ui/dialog";
+import {Button} from "@/_components/ui/button";
 
 const RoomDetails = () => {
     return (
