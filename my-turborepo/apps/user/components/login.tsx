@@ -15,6 +15,8 @@ type LoginFormValues = {
 
 
 const Login = ({setIsLoginOpen, setIsSignUpOpen}) => {
+    console.log('loginmodea22222l')
+
     const {register, handleSubmit, formState: {errors}} = useForm<LoginFormValues>();
 
 

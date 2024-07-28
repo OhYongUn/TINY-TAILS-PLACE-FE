@@ -1,6 +1,4 @@
-// eslint.config.js
-
-import { Linter } from "eslint";
+// eslint.config.jsimport { Linter } from "eslint";
 import tsParser from "@typescript-eslint/parser";
 import nextConfig from "@repo/eslint-config/next.js";
 
