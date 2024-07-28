@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "user-web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -15,6 +15,10 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "react-spinners": "^0.13.8",
+    "react-hook-form": "^7.52.1",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "@next/eslint-plugin-next": "14.2.4",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",

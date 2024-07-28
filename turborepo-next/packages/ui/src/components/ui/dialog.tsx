@@ -3,7 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 import  React from "react";
 
-import { cn } from "./utils"
+import { cn } from "../../lib/utils"
 
 const Dialog = DialogPrimitive.Root
 

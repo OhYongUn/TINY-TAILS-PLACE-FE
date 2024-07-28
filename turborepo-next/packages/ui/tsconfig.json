@@ -4,7 +4,11 @@
     "baseUrl": ".",
     "paths": {
       "@repo/ui/*": ["./src/*"]
-    }
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx"  // 이 부분이 중요합니다.
+
   },
   "include": ["src"],
   "exclude": ["node_modules"]
