@@ -1,7 +1,7 @@
 "use client"
-import Main from "@/app/(home)/_compontents/main";
-import Header from "@/_components/layout/Header";
-import Footer from "@/_components/layout/Footer";
+import Main from "../../components/main";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
 
 const Home = () => {
     return (

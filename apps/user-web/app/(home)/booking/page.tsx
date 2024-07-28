@@ -1,9 +1,9 @@
 // pages/bookings/index.tsx
 import React from 'react';
-import ReservationForm from "@/app/(home)/_compontents/reservationForm";
-import BookingForm from "@/app/(home)/_compontents/bookingForm";
-import RoomDetails from "@/app/(home)/_compontents/roomDetails";
-import RoomList from "@/app/(home)/_compontents/roomList";
+import ReservationForm from "../../../components/reservationForm";
+import BookingForm from "../../../components/bookingForm";
+import RoomDetails from "../../../components/roomDetails";
+import RoomList from "../../../components/roomList";
 
 const BookingsPage = () => {
     return (

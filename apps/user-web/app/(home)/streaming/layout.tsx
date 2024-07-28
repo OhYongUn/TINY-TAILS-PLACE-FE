@@ -1,6 +1,6 @@
 // app/(home)/streaming/layout.tsx
 import {ReactNode} from "react";
-import StreamingHeader from "@/app/(home)/_compontents/streamingHeader";
+import StreamingHeader from "../../../components/streamingHeader";
 
 const StreamingLayout = ({children}: Readonly<{ children: ReactNode }>) => {
     return (

@@ -1,5 +1,5 @@
-import LiveStreamVideo from "@/app/(home)/_compontents/liveStreamVideo";
-import LiveChatBox from "@/app/(home)/_compontents/liveChatBox";
+import LiveStreamVideo from "../../../components/liveStreamVideo";
+import LiveChatBox from "../../../components/liveChatBox";
 
 const StreamingPage = () => {
     return (
