@@ -10,15 +10,13 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "jwt-decode": "^4.0.0",
     "next": "14.2.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
-    "react-spinners": "^0.13.8",
-    "react-hook-form": "^7.52.1",
-    "axios": "^1.7.2",
-    "dotenv": "^16.4.5",
     "@next/eslint-plugin-next": "14.2.4",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
@@ -27,8 +25,12 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.19",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "postcss": "^8.4.38",
+    "react-hook-form": "^7.52.1",
+    "react-spinners": "^0.13.8",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5"
   }
