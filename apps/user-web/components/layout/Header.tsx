@@ -6,12 +6,12 @@ import {Button} from "@repo/ui/components/ui/button";
 import {Avatar, AvatarFallback, AvatarImage} from "@repo/ui/components/ui/avatar";
 import Link from "next/link";
 import {PawPrintIcon, SearchIcon} from "@repo/ui/components/ui/icons";
-import LoginModal from "../../components/loginModal";
-import SighUpModal from "../../components/sighUpModal";
+import LoginModal from "../../../user-web/app/(home)/(auth)/loginModal";
+import SighUpModal from "../../../user-web/app/(home)/(auth)/sighUpModal";
 
 const Header = () => {
-    const [isLoginOpen, setIsLoginOpen] = useState(false)
-    const [isSighUpOpen, setIsSignUpOpen] = useState(false)
+    const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
 
     return (
         <>
@@ -40,7 +40,7 @@ const Header = () => {
                 </div>
             </header>
             <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen}/>
-            <SighUpModal isSighUpOpen={isSighUpOpen} setIsSignUpOpen={setIsSignUpOpen}/>
+            <SighUpModal isSignUpOpen={isSignUpOpen} setIsSignUpOpen={setIsSignUpOpen}/>
         </>
     );
 };
