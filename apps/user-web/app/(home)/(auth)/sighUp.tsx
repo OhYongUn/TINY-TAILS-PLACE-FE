@@ -4,7 +4,8 @@ import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTit
 import { Button } from "@repo/ui/components/ui/button";
 import { Label } from "@repo/ui/components/ui/label";
 import { Input } from "@repo/ui/components/ui/input";
-import axios from "axios";
+import {useSignUp} from "@app/hook/auth/auth";
+import {SignUpResponse} from "@app/interface/auth/auth";
 
 type SignUpFormValues = {
     name: string;
@@ -18,6 +19,7 @@ type SignUpFormValues = {
 const SignUp = () => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<SignUpFormValues>();
     const [phone, setPhone] = useState("");
+    const [error, setError] = useState('');
 
     const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
@@ -35,13 +37,22 @@ const SignUp = () => {
         }
     };
 
-    const onSubmit: SubmitHandler<SignUpFormValues> = async data => {
-        try {
-            const response = await axios.post('http://localhost:3000/auth/signup', data);
-        } catch (error) {
-            console.error('회원가입 실패:', error.response?.data || error.message);
-        }
-    };
+  const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
+    try {
+      const response: SignUpResponse = await useSignUp(data);
+      if (response.success && response.data) {
+        console.log("Sign up successful:", response.data.message);
+        // 회원가입 성공 처리
+      } else {
+        // API가 성공적으로 호출되었지만, 회원가입 프로세스에서 오류가 발생한 경우
+        console.error("Sign up failed:", response.error);
+        setError(response.error || "An unknown error occurred");
+      }
+    } catch (error: any) {
+      console.error("Sign up request failed:", error.message);
+      setError("Failed to connect to the server. Please try again later.");
+    }
+  };
 
     return (
         <DialogContent className="sm:max-w-md">

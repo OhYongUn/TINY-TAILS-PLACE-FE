@@ -1,23 +1,18 @@
 // stores/userStore.ts
 import { create } from 'zustand';
-
-interface User {
-  id: string;
-  email: string;
-  // 추가 필요한 사용자 정보...
-}
+import {user} from "@app/interface/user/user";
 
 interface UserState {
-  user: User | null;
+  user: user | null;
   isLoggedIn: boolean;
-  setUser: (user: User) => void;
+  setUser: (user: user) => void;
   clearUser: () => void;
 }
 
 const useUserStore = create<UserState>((set) => ({
   user: null,
   isLoggedIn: false,
-  setUser: (user: User) => set({ user, isLoggedIn: true }),
+  setUser: (user: user) => set({ user, isLoggedIn: true }),
   clearUser: () => set({ user: null, isLoggedIn: false }),
 }));
 

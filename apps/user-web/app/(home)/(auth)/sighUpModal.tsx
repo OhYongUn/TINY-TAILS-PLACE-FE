@@ -1,6 +1,6 @@
 import {Dialog} from "@repo/ui/components/ui/dialog";
 import SighUp from "./sighUp";
-import {ModalInterface} from "@app/common/interface/interface";
+import {ModalInterface} from "@app/common/compontes/interface";
 
 const SighUpModal = ({isSignUpOpen,setIsSignUpOpen} : ModalInterface) => {
   return(
