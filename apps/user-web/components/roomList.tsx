@@ -14,7 +14,7 @@ const RoomList = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <Card>
                       <img
-                          src="/placeholder.svg"
+                          src="/image/Deluxe_Suite.webp"
                           alt="Room Image"
                           width={400}
                           height={300}
@@ -35,7 +35,7 @@ const RoomList = () => {
                   </Card>
                   <Card>
                       <img
-                          src="/placeholder.svg"
+                          src="/image/Standard_Room.webp"
                           alt="Room Image"
                           width={400}
                           height={300}
@@ -56,7 +56,7 @@ const RoomList = () => {
                   </Card>
                   <Card>
                       <img
-                          src="/placeholder.svg"
+                          src="/image/Premium_Suite.webp"
                           alt="Room Image"
                           width={400}
                           height={300}
