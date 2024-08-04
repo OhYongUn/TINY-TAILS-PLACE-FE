@@ -21,6 +21,9 @@ importers:
       '@types/js-cookie':
         specifier: ^3.0.6
         version: 3.0.6
+      '@types/react-day-picker':
+        specifier: ^5.3.0
+        version: 5.3.0(date-fns@3.6.0)(react@18.2.0)
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
@@ -42,6 +45,9 @@ importers:
       react:
         specifier: ^18
         version: 18.2.0
+      react-day-picker:
+        specifier: ^8.10.1
+        version: 8.10.1(date-fns@3.6.0)(react@18.2.0)
       react-dom:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
@@ -67,6 +73,9 @@ importers:
       '@types/react':
         specifier: ^18
         version: 18.2.48
+      '@types/react-day-picker':
+        specifier: ^5.3.0
+        version: 5.3.0(date-fns@3.6.0)(react@18.2.0)
       '@types/react-dom':
         specifier: ^18
         version: 18.2.18
@@ -847,6 +856,10 @@ packages:
 
   '@types/prop-types@15.7.11':
     resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
+
+  '@types/react-day-picker@5.3.0':
+    resolution: {integrity: sha512-iMMXQjwTH8uxPTW3WYP6ZufZBSMFFEScGIztENtKfvukefrojmX/WCUNPrimC9ys1ll5nnM0VGaHolYLAbcEtw==}
+    deprecated: This is a stub types definition for react-day-picker (https://github.com/gpbl/react-day-picker). react-day-picker provides its own type definitions, so you don't need @types/react-day-picker installed!
 
   '@types/react-dom@18.2.18':
     resolution: {integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==}
@@ -3627,6 +3640,13 @@ snapshots:
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/prop-types@15.7.11': {}
+
+  '@types/react-day-picker@5.3.0(date-fns@3.6.0)(react@18.2.0)':
+    dependencies:
+      react-day-picker: 8.10.1(date-fns@3.6.0)(react@18.2.0)
+    transitivePeerDependencies:
+      - date-fns
+      - react
 
   '@types/react-dom@18.2.18':
     dependencies:
