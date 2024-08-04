@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import useUserStore from "@app/store/userStore";
 
 const $axios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -10,9 +11,9 @@ const $axios = axios.create({
 });
 
 $axios.interceptors.request.use(config => {
-  const token = Cookies.get('accessToken');
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+  const accessToken = useUserStore.getState().getAccessToken();
+  if (accessToken) {
+    config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return config;
 }, error => {

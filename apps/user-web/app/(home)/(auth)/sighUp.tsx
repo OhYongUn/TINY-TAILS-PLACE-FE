@@ -6,6 +6,7 @@ import {Label} from "@repo/ui/components/ui/label";
 import {Input} from "@repo/ui/components/ui/input";
 import {useSignUp} from "@app/hook/auth/auth";
 import {SignUpResponse} from "@app/interface/auth/auth";
+import {ModalInterface} from "@app/interface/compontes/interface";
 
 type SignUpFormValues = {
   name: string;
@@ -16,8 +17,8 @@ type SignUpFormValues = {
   agreeToTerms: boolean;
 };
 
-const SignUp = () => {
-  const {register, handleSubmit, formState: {errors}, setValue} = useForm<SignUpFormValues>();
+const SignUp = ({ isSignUpOpen,setIsSignUpOpen}: ModalInterface) => {
+  const {register, handleSubmit, formState: {errors}, setValue, reset} = useForm<SignUpFormValues>();
   const [phone, setPhone] = useState("");
   const [error, setError] = useState('');
 
@@ -44,7 +45,12 @@ const SignUp = () => {
 
       if ('success' in response && response.success) {
         console.log("Sign up successful:", response.data.message);
-        // 회원가입 성공 처리 (예: 로그인 페이지로 리다이렉트)
+        alert('회원가입이 성공하엿습니다. 로그인 해주세요');
+        setValue('phone', '');
+        reset();
+        if (isSignUpOpen){
+          setIsSignUpOpen?.(false);
+        }
       } else {
         if ("message" in response) {
           setError(response.message || '회원가입에 실패했습니다.');
