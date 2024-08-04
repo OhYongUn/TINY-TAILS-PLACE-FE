@@ -23,10 +23,11 @@ const Login = ({setIsLoginOpen, setIsSignUpOpen}: ModalInterface) => {
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     try {
-      const response: LoginResponse = await useLogin(data);
+      const response = await useLogin(data);
+      console.log('response', response);
 
-      if (response.success && response.data) {
-        const {user, accessToken, refreshToken} = response.data;
+      if ('success' in response && response.success) {
+        const { user, accessToken, refreshToken } = response.data;
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
@@ -36,12 +37,16 @@ const Login = ({setIsLoginOpen, setIsSignUpOpen}: ModalInterface) => {
           setIsLoginOpen(false);
         }
       } else {
-        setError(response.error || "Login failed. Please try again.");
+        if("statusCode" in response && response.statusCode === 404){
+          setError( '존재하지않는 사용자입니다.');
+          return
+        }
+        if ("message" in response) {
+          setError(response.message || '로그인에 실패했습니다.');
+        }
       }
     } catch (error: any) {
-      // 네트워크 오류 등 예상치 못한 오류 처리
-      console.error("Login request failed:", error);
-      setError("Failed to connect to the server. Please try again later.");
+      setError('로그인 중 오류가 발생했습니다.');
     }
   };
 
@@ -79,12 +84,14 @@ const Login = ({setIsLoginOpen, setIsSignUpOpen}: ModalInterface) => {
             />
             {errors.password && <span>{errors.password.message}</span>}
           </div>
+          {error && <p className="text-red-500">{error}</p>}
+
           <Button type="submit" variant="outline" className="bg-gray-800 text-white hover:bg-gray-900">
-            Login
+            로그인
           </Button>
           <Button variant="outline" onClick={handleSignup}
                   className="bg-gray-800 text-white hover:bg-gray-900">
-            Sign up
+            회원가입
           </Button>
         </div>
       </form>
