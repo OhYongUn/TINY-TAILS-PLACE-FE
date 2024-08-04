@@ -1,15 +1,6 @@
-"use client"
-import Main from "../../components/main";
-import Header from "../../components/layout/Header";
-import Footer from "../../components/layout/Footer";
-
+'use client';
+import Main from '../../components/main';
 const Home = () => {
-    return (
-        <>
-            <Header/>
-                <Main/>
-            <Footer/>
-        </>
-    );
-}
+  return <Main />;
+};
 export default Home;

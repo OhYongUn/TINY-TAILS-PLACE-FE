@@ -1,14 +1,24 @@
-const { resolve } = require("node:path");
+const { resolve } = require('node:path');
 
-const project = resolve(process.cwd(), "tsconfig.json");
+const project = resolve(process.cwd(), 'tsconfig.json');
 
-/** @type {import("eslint").Linter.Config} */
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
   extends: [
-    "eslint:recommended",
-    require.resolve("@vercel/style-guide/eslint/next"),
-    "turbo",
+    'eslint:recommended',
+    require.resolve('@vercel/style-guide/eslint/next'),
+    'turbo',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    'plugin:prettier/recommended',
   ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project,
+    ecmaVersion: 2021,
+    sourceType: 'module',
+  },
+  plugins: ['@typescript-eslint', 'prettier', 'only-warn'],
   globals: {
     React: true,
     JSX: true,
@@ -16,19 +26,39 @@ module.exports = {
   env: {
     node: true,
     browser: true,
+    es2021: true,
   },
-  plugins: ["only-warn"],
   settings: {
-    "import/resolver": {
+    'import/resolver': {
       typescript: {
         project,
       },
     },
+    react: {
+      version: 'detect',
+    },
   },
   ignorePatterns: [
     // Ignore dotfiles
-    ".*.js",
-    "node_modules/",
+    '.*.js',
+    'node_modules/',
+    'dist/',
+    '.next/',
+    'out/',
   ],
-  overrides: [{ files: ["*.js?(x)", "*.ts?(x)"] }],
+  rules: {
+    'prettier/prettier': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    'react/react-in-jsx-scope': 'off', // Next.js doesn't require React import
+    // Add any other custom rules here
+  },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': ['warn'],
+      },
+    },
+  ],
 };
