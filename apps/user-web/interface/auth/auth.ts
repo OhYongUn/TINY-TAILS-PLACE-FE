@@ -1,4 +1,4 @@
-import { User } from "@app/interface/user/user";
+import {User} from "@app/interface/user/user";
 
 export interface LoginData {
   email: string;
@@ -25,6 +25,13 @@ export interface SignUpResponseData {
 }
 
 export type SignUpResponse = ApiResponse<SignUpResponseData>;
+
+export interface LogoutResponseData {
+  message: string;
+}
+
+export type LogoutResponse = ApiResponse<LogoutResponseData>;
+
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;

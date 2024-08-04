@@ -1,18 +1,18 @@
 // stores/userStore.ts
 import { create } from 'zustand';
-import {user} from "@app/interface/user/user";
+import {User} from "@app/interface/user/user";
 
 interface UserState {
-  user: user | null;
+  user: User | null;
   isLoggedIn: boolean;
-  setUser: (user: user) => void;
+  setUser: (user: User) => void;
   clearUser: () => void;
 }
 
 const useUserStore = create<UserState>((set) => ({
   user: null,
   isLoggedIn: false,
-  setUser: (user: user) => set({ user, isLoggedIn: true }),
+  setUser: (user: User) => set({ user, isLoggedIn: true }),
   clearUser: () => set({ user: null, isLoggedIn: false }),
 }));
 

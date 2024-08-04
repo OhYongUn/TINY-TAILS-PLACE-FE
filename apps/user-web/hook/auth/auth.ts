@@ -1,5 +1,12 @@
 import axios from 'axios';
-import {LoginData, LoginResponse, LoginResponseData, SignUpData, SignUpResponse} from "@app/interface/auth/auth";
+import {
+  LoginData,
+  LoginResponse,
+  LoginResponseData, LogoutResponseData,
+  SignUpData,
+  SignUpResponse,
+  SignUpResponseData
+} from "@app/interface/auth/auth";
 import {ApiErrorResponse, ApiResponse, ApiSuccessResponse} from "@app/interface/ApiResponse";
 
 async function apiRequest<T>(url: string, data: any): Promise<ApiResponse<T>> {
@@ -23,6 +30,13 @@ export async function useLogin(data: LoginData): Promise<ApiResponse<LoginRespon
   return apiRequest<LoginResponseData>('/api/auth/login', data);
 }
 
-export async function useSignUp(data: SignUpData): Promise<ApiResponse<SignUpResponse>> {
-  return apiRequest<SignUpResponse>('/api/auth/signUp', data);
+export async function useSignUp(data: SignUpData): Promise<ApiResponse<SignUpResponseData>> {
+  return apiRequest<SignUpResponseData>('/api/auth/signup', data);
+}
+
+export async function useLogout(email: string): Promise<ApiResponse<LogoutResponseData>> {
+  if (!email) {
+    throw new Error('Email is required for logout');
+  }
+  return apiRequest<LogoutResponseData>('/api/auth/logout', { email });
 }
