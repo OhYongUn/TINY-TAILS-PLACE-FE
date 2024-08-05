@@ -1,45 +1,27 @@
 // BookingForm.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { Button } from '@repo/ui/components/ui/button';
 import { DateRange } from 'react-day-picker';
 import DateRangePicker from './DateRangePicker';
 import PetSelector from './PetSelector';
 import AvailableRooms from './AvailableRooms';
-
-interface Room {
-  id: number;
-  name: string;
-  capacity: number;
-  price: number;
-}
+import { Room } from '@app/interface/rooms/roomType';
+import { useRoomSearch } from '@app/hook/room/roomServcie';
 
 const BookingForm: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [numPets, setNumPets] = useState<string>('');
-  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [disabledDates, setDisabledDates] = useState<Date[]>([]);
+  const { isLoading, error, availableRooms, performSearch } = useRoomSearch();
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  /*useEffect(() => {
-    // 컴포넌트 마운트 시 비활성화할 날짜들을 가져옵니다
-    const fetchDisabledDates = async () => {
-      try {
-        const response = await axios.get('/api/disabled-dates');
-        setDisabledDates(
-          response.data.map((dateString: string) => new Date(dateString)),
-        );
-      } catch (error) {
-        console.error('Failed to fetch disabled dates:', error);
-      }
-    };
-
-    fetchDisabledDates();
-  }, []);*/
+  const oneYearLater = new Date(
+    today.getFullYear() + 1,
+    today.getMonth(),
+    today.getDate(),
+  );
 
   const handleDateSelect = (range: DateRange | undefined) => {
     setDateRange(range);
@@ -51,32 +33,18 @@ const BookingForm: React.FC = () => {
 
   const findAvailableRooms = async () => {
     if (dateRange?.from && dateRange?.to && numPets) {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.post('/api/available-rooms', {
-          checkIn: dateRange.from.toISOString(),
-          checkOut: dateRange.to.toISOString(),
-          numPets: parseInt(numPets),
-        });
-
-        setAvailableRooms(response.data);
-      } catch (err) {
-        setError('Failed to fetch available rooms. Please try again.');
-        console.error('Error fetching available rooms:', err);
-      } finally {
-        setIsLoading(false);
-      }
+      const params = {
+        checkIn: dateRange.from.toISOString(),
+        checkOut: dateRange.to.toISOString(),
+        numPets: parseInt(numPets),
+      };
+      console.log('parmas', params);
+      await performSearch(params);
     } else {
-      setError('Please select both date range and number of pets.');
+      // You might want to handle this error in the UI
+      console.error('Please select both date range and number of pets.');
     }
   };
-  const oneYearLater = new Date(
-    today.getFullYear() + 1,
-    today.getMonth(),
-    today.getDate(),
-  );
 
   return (
     <section className="bg-background py-8 px-4 md:px-6">
