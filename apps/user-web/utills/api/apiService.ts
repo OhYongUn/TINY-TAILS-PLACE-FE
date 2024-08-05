@@ -1,4 +1,4 @@
-import { isAxiosError } from 'axios';
+import axios, { isAxiosError } from 'axios';
 import {
   ApiErrorResponse,
   ApiSuccessResponse,
@@ -6,7 +6,7 @@ import {
 } from '@app/interface/ApiResponse';
 import $axios from '@app/utills/api/axiosConfig';
 
-async function authenticatedApiRequest<T>(
+export async function authenticatedApiRequest<T>(
   method: 'get' | 'post' | 'put' | 'delete',
   url: string,
   data?: any,

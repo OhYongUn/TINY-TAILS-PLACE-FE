@@ -5,7 +5,7 @@ import {
   LogoutResponseData,
   SignUpData,
   SignUpResponseData,
-} from '@app/interface/auth/auth';
+} from '@app/interface/auth/authTypes';
 import {
   ApiErrorResponse,
   ApiResponse,

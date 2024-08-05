@@ -12,3 +12,8 @@ export interface ApiSuccessResponse<T> {
   statusCode: number; // statusCode 추가
 }
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+export function isApiSuccessResponse<T>(
+  response: ApiResponse<T>,
+): response is ApiSuccessResponse<T> {
+  return response.success;
+}
