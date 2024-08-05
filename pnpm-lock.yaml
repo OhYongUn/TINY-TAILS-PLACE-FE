@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5

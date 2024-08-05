@@ -1,6 +1,5 @@
 import React from 'react';
 import { DayPicker, DateRange } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { buttonVariants } from '@repo/ui/components/ui/button';
@@ -11,6 +10,11 @@ export type CalendarProps = {
   showOutsideDays?: boolean;
   onDateChange: (range: DateRange | undefined) => void;
   selected?: DateRange | undefined;
+  disabled?: any;
+  modifiers?: any;
+  modifiersStyles?: any;
+  fromDate?: Date;
+  toDate?: Date;
 };
 
 function Calendar({
@@ -19,6 +23,11 @@ function Calendar({
   showOutsideDays = true,
   onDateChange,
   selected,
+  disabled,
+  modifiers,
+  modifiersStyles,
+  fromDate,
+  toDate,
   ...props
 }: CalendarProps) {
   return (
@@ -27,6 +36,11 @@ function Calendar({
       mode="range"
       selected={selected}
       onSelect={onDateChange}
+      disabled={disabled}
+      modifiers={modifiers}
+      modifiersStyles={modifiersStyles}
+      fromDate={fromDate}
+      toDate={toDate}
       className={cn('p-3', className)}
       classNames={{
         months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',

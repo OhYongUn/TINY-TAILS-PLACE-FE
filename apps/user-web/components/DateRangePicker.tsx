@@ -13,38 +13,18 @@ import { DateRange } from 'react-day-picker';
 interface DateRangePickerProps {
   dateRange: DateRange | undefined;
   onDateChange: (range: DateRange | undefined) => void;
-  disabledDates?: Date[];
+  disabledDays?: any;
+  fromDate?: Date;
+  toDate?: Date;
 }
 
 const DateRangePicker: React.FC<DateRangePickerProps> = ({
   dateRange,
   onDateChange,
-  disabledDates = [],
+  disabledDays,
+  fromDate,
+  toDate,
 }) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 00:00:00으로 설정
-
-  const disabledDays = [
-    { before: today }, // 오늘 이전 날짜 비활성화
-    ...disabledDates, // API에서 받아온 비활성화할 날짜들
-  ];
-
-  const isDateDisabled = (date: Date) => {
-    return disabledDates.some(
-      (disabledDate) =>
-        date.getDate() === disabledDate.getDate() &&
-        date.getMonth() === disabledDate.getMonth() &&
-        date.getFullYear() === disabledDate.getFullYear(),
-    );
-  };
-
-  // 1년 후의 날짜 계산
-  const oneYearLater = new Date(
-    today.getFullYear() + 1,
-    today.getMonth(),
-    today.getDate(),
-  );
-
   return (
     <div>
       <label
@@ -67,14 +47,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             selected={dateRange}
             onDateChange={onDateChange}
             disabled={disabledDays}
-            modifiers={{
-              disabled: isDateDisabled,
-            }}
-            modifiersStyles={{
-              disabled: { textDecoration: 'line-through', color: 'gray' },
-            }}
-            fromDate={today}
-            toDate={oneYearLater}
+            fromDate={fromDate}
+            toDate={toDate}
           />
         </PopoverContent>
       </Popover>
