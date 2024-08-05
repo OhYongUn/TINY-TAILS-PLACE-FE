@@ -1,20 +1,24 @@
-"use client";
+'use client';
 
-import React, {useState} from 'react';
-import {Input} from "@repo/ui/components/ui/input";
-import {Button} from "@repo/ui/components/ui/button";
-import {Avatar, AvatarFallback, AvatarImage} from "@repo/ui/components/ui/avatar";
-import Link from "next/link";
-import {PawPrintIcon, SearchIcon} from "@repo/ui/components/ui/icons";
-import LoginModal from "../../../user-web/app/(home)/(auth)/loginModal";
-import SighUpModal from "../../../user-web/app/(home)/(auth)/sighUpModal";
-import useUserStore from "@app/store/userStore";
-import {useLogout} from "@app/hook/auth/auth";
+import React, { useState } from 'react';
+import { Input } from '@repo/ui/components/ui/input';
+import { Button } from '@repo/ui/components/ui/button';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@repo/ui/components/ui/avatar';
+import Link from 'next/link';
+import { PawPrintIcon, SearchIcon } from '@repo/ui/components/ui/icons';
+import LoginModal from '../../../user-web/app/(home)/(auth)/loginModal';
+import SighUpModal from '../../../user-web/app/(home)/(auth)/sighUpModal';
+import useUserStore from '@app/store/userStore';
+import { useLogout } from '@app/hook/auth/authService';
 
 const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
-  const {user, isLoggedIn, clearUser} = useUserStore();
+  const { user, isLoggedIn, clearUser } = useUserStore();
 
   const handleLogout = async () => {
     try {
@@ -29,8 +33,8 @@ const Header = () => {
         localStorage.removeItem('refreshToken');
         clearUser();
       } else {
-        if ("message" in response) {
-          console.error("Logout failed:", response?.message);
+        if ('message' in response) {
+          console.error('Logout failed:', response?.message);
         }
       }
     } catch (error: any) {
@@ -43,14 +47,14 @@ const Header = () => {
       <header className="flex items-center justify-between p-4 bg-white shadow-md">
         <div className="flex items-center space-x-2">
           <Link href="#" prefetch={false}>
-            <PawPrintIcon className="w-6 h-6 text-primary"/>
+            <PawPrintIcon className="w-6 h-6 text-primary" />
             <span className="text-lg font-bold">Tiny Tails Place</span>
           </Link>
         </div>
         <div className="flex items-center space-x-4">
           <div className="relative w-64">
-            <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"/>
-            <Input type="search" placeholder="Search" className="w-full pl-8"/>
+            <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input type="search" placeholder="Search" className="w-full pl-8" />
           </div>
           <Link href="/booking">
             <Button variant="secondary">Book Now</Button>
@@ -58,7 +62,7 @@ const Header = () => {
           {isLoggedIn ? (
             <div className="flex items-center space-x-4">
               <Avatar>
-                <AvatarImage src={user?.avatarUrl || '/placeholder-user.jpg'}/>
+                <AvatarImage src={user?.avatarUrl || '/placeholder-user.jpg'} />
                 <AvatarFallback>{user?.initials || 'U'}</AvatarFallback>
               </Avatar>
               <Button variant="outline" onClick={handleLogout}>
@@ -72,8 +76,15 @@ const Header = () => {
           )}
         </div>
       </header>
-      <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} setIsSignUpOpen={setIsSignUpOpen}/>
-      <SighUpModal isSignUpOpen={isSignUpOpen} setIsSignUpOpen={setIsSignUpOpen}/>
+      <LoginModal
+        isLoginOpen={isLoginOpen}
+        setIsLoginOpen={setIsLoginOpen}
+        setIsSignUpOpen={setIsSignUpOpen}
+      />
+      <SighUpModal
+        isSignUpOpen={isSignUpOpen}
+        setIsSignUpOpen={setIsSignUpOpen}
+      />
     </>
   );
 };
