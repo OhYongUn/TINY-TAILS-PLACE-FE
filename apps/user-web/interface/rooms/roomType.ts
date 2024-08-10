@@ -3,9 +3,8 @@
 import { ApiResponse } from '@app/interface/ApiResponse';
 
 export interface SearchRoomParams {
-  checkIn: string; // ISO 8601 형식의 날짜 문자열
-  checkOut: string; // ISO 8601 형식의 날짜 문자열
-  numPets: number;
+  checkInDate: string; // ISO 8601 형식의 날짜 문자열
+  checkOutDate: string; // ISO 8601 형식의 날짜 문자열
 }
 
 export interface Room {

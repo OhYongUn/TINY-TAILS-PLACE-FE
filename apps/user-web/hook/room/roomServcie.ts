@@ -20,7 +20,6 @@ export function useRoomSearch() {
         '/api/rooms/search',
         { params },
       );
-      console.log('responseresponse', response);
       if (isApiSuccessResponse(response.data)) {
         setAvailableRooms(response.data.data);
       } else {

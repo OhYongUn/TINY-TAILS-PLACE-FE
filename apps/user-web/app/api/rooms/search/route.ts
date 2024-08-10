@@ -11,11 +11,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const params: SearchRoomParams = {
-      checkIn: searchParams.get('checkIn') || '',
-      checkOut: searchParams.get('checkOut') || '',
-      numPets: parseInt(searchParams.get('numPets') || '0', 10),
+      checkInDate: searchParams.get('checkIn') || '',
+      checkOutDate: searchParams.get('checkOut') || '',
     };
-    const fullUrl = `${process.env.NEXT_PUBLIC_API_URL}/rooms/search`;
+    const fullUrl = `${process.env.NEXT_PUBLIC_API_URL}/rooms/available`;
     const response = await axios.get<ApiResponse<SearchRoomResponse>>(fullUrl, {
       params,
     });
