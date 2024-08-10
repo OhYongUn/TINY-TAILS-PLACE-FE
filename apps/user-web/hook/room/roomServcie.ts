@@ -12,7 +12,10 @@ export function useRoomSearch() {
   const [error, setError] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
 
-  const performSearch = async (params: SearchRoomParams) => {
+  const performSearch = async (params: {
+    checkIn: string;
+    checkOut: string;
+  }) => {
     setIsLoading(true);
     setError(null);
     try {

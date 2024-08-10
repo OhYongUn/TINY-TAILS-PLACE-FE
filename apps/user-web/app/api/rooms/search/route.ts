@@ -18,15 +18,10 @@ export async function GET(request: NextRequest) {
     const response = await axios.get<ApiResponse<SearchRoomResponse>>(fullUrl, {
       params,
     });
-    // const response = await authenticatedApiRequest<SearchRoomResponse>(
-    //   'get',
-    //   `${process.env.NEXT_PUBLIC_API_URL}/rooms/search`,
-    //   { params },
-    // );
-    console.log('response', response);
-    return NextResponse.json(response);
+
+    return NextResponse.json(response.data);
   } catch (error: any) {
-    console.error('Error searching rooms:', error.response);
+    console.error('Error searching rooms:', error.responseㄴ);
     const errorMessage =
       error.response?.data?.message || 'An unexpected error occurred';
     const statusCode = error.response?.status || 500;

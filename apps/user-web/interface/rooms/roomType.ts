@@ -10,12 +10,18 @@ export interface SearchRoomParams {
 export interface Room {
   id: number;
   name: string;
-  type: string;
+  class: 'STANDARD' | 'DELUXE' | 'SUITE';
   description: string;
   capacity: number;
-  price: number;
   size: number;
   imageUrls: string[];
-  available: boolean;
+  availableCount: number;
+  availableRoomDetails: RoomDetail[];
+  price: number;
+}
+
+export interface RoomDetail {
+  id: number;
+  roomNumber: string;
 }
 export type SearchRoomResponse = ApiResponse<Room[]>;
