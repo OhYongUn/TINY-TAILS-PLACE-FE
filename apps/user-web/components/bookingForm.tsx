@@ -9,11 +9,13 @@ import PetSelector from './PetSelector';
 import AvailableRooms from './AvailableRooms';
 import { Room } from '@app/interface/rooms/roomType';
 import { useRoomSearch } from '@app/hook/room/roomServcie';
+import { useBookingStore } from '@app/store/bookingStore';
 
 const BookingForm: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [numPets, setNumPets] = useState<string>('');
-  const { isLoading, error, availableRooms, performSearch } = useRoomSearch();
+  const { isLoading, error, performSearch } = useRoomSearch();
+  const { setAvailableRooms } = useBookingStore();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -27,39 +29,39 @@ const BookingForm: React.FC = () => {
     setDateRange(range);
   };
 
-  const handleNumPetsChange = (value: string) => {
-    setNumPets(value);
+  const formatDateToYYYYMMDD = (date: Date): string => {
+    // @ts-ignore
+    return date.toISOString().split('T')[0];
   };
 
   const findAvailableRooms = async () => {
-    if (dateRange?.from && dateRange?.to && numPets) {
+    if (dateRange?.from && dateRange?.to) {
       const params = {
-        checkIn: dateRange.from.toISOString(),
-        checkOut: dateRange.to.toISOString(),
-        numPets: parseInt(numPets),
+        checkIn: formatDateToYYYYMMDD(dateRange.from),
+        checkOut: formatDateToYYYYMMDD(dateRange.to),
       };
-      console.log('parmas', params);
-      await performSearch(params);
+      const results = await performSearch(params);
+      setAvailableRooms(results);
     } else {
-      // You might want to handle this error in the UI
       console.error('Please select both date range and number of pets.');
     }
   };
 
   return (
     <section className="bg-background py-8 px-4 md:px-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DateRangePicker
-          dateRange={dateRange}
-          onDateChange={handleDateSelect}
-          disabledDays={{ before: today }}
-          fromDate={today}
-          toDate={oneYearLater}
-        />
-        <PetSelector onValueChange={handleNumPetsChange} />
-        <div className="col-span-1 md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+        <div className="md:col-span-2">
+          <DateRangePicker
+            dateRange={dateRange}
+            onDateChange={handleDateSelect}
+            disabledDays={{ before: today }}
+            fromDate={today}
+            toDate={oneYearLater}
+          />
+        </div>
+        <div>
           <Button
-            className="w-full"
+            className="w-full h-12"
             onClick={findAvailableRooms}
             disabled={isLoading}
           >
@@ -68,10 +70,6 @@ const BookingForm: React.FC = () => {
         </div>
       </div>
       {error && <p className="text-red-500 mt-4">{error}</p>}
-      {availableRooms.length > 0 && <AvailableRooms rooms={availableRooms} />}
-      {availableRooms.length === 0 && !isLoading && !error && (
-        <p className="mt-4">No rooms available for the selected criteria.</p>
-      )}
     </section>
   );
 };

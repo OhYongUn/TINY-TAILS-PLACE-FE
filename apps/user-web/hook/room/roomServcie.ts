@@ -1,42 +1,41 @@
 import { useState } from 'react';
-import axios from 'axios';
-import {
-  SearchRoomParams,
-  Room,
-  SearchRoomResponse,
-} from '@app/interface/rooms/roomType';
-import { isApiSuccessResponse } from '@app/interface/ApiResponse';
+import { Room } from '@app/interface/rooms/roomType';
+import { apiRequest, useApiData } from '@app/interface/ApiResponse';
 
 export function useRoomSearch() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
 
   const performSearch = async (params: {
     checkIn: string;
     checkOut: string;
-  }) => {
+  }): Promise<Room[]> => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get<SearchRoomResponse>(
+      const response = await apiRequest<Room[]>(
         '/api/rooms/search',
+        'GET',
+        undefined,
         { params },
       );
-      if (isApiSuccessResponse(response.data)) {
-        setAvailableRooms(response.data.data);
-      } else {
-        setError(response.data.message);
-        setAvailableRooms([]);
+
+      const { data, error } = useApiData(response);
+
+      if (error) {
+        setError(error.message);
+        return [];
       }
+
+      return data || [];
     } catch (err) {
       setError('An error occurred while searching for rooms.');
       console.error('Error fetching available rooms:', err);
-      setAvailableRooms([]);
+      return [];
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { isLoading, error, availableRooms, performSearch };
+  return { isLoading, error, performSearch };
 }

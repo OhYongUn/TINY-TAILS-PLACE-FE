@@ -27,12 +27,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 }) => {
   return (
     <div>
-      <label
-        htmlFor="check-in"
-        className="block text-sm font-medium text-foreground mb-2"
-      >
-        Choose your dates
-      </label>
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full">
