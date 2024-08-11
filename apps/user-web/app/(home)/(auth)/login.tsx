@@ -29,38 +29,17 @@ const Login = ({ setIsLoginOpen, setIsSignUpOpen }: ModalInterface) => {
     formState: { errors },
     reset,
   } = useForm<LoginFormValues>();
+  const { login, isLoading, error } = useLogin();
   const setUser = useUserStore((state) => state.setUser);
-  const [error, setError] = useState('');
-
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
-    try {
-      const response = await useLogin(data);
-      console.log('response', response);
-
-      if ('success' in response && response.success) {
-        const { user, accessToken, refreshToken } = response.data;
-
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        setUser(user);
-        reset();
-        if (setIsLoginOpen) {
-          setIsLoginOpen(false);
-        }
-      } else {
-        if ('statusCode' in response && response.statusCode === 404) {
-          setError('존재하지않는 사용자입니다.');
-          return;
-        }
-        if ('message' in response) {
-          setError(response.message || '로그인에 실패했습니다.');
-        }
+    const result = await login(data);
+    if (result?.success) {
+      reset();
+      if (setIsLoginOpen) {
+        setIsLoginOpen(false);
       }
-    } catch (error: any) {
-      setError('로그인 중 오류가 발생했습니다.');
     }
   };
-
   const handleSignup = () => {
     if (setIsLoginOpen && setIsSignUpOpen) {
       setIsLoginOpen(false);

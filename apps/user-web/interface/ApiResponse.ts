@@ -15,10 +15,11 @@ export async function apiRequest<T>(
 ): Promise<ApiResponse<T>> {
   const isServer = typeof window === 'undefined';
   const baseURL = isServer ? process.env.NEXT_PUBLIC_API_URL : '';
-
+  const fullUrl = url.startsWith('http') ? url : `${baseURL}${url}`;
   try {
+    console.log('fullUrl', fullUrl);
     const response = await axios({
-      url: `${baseURL}${url}`,
+      url: fullUrl,
       method,
       data,
       ...config,
@@ -28,9 +29,19 @@ export async function apiRequest<T>(
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ApiResponse<T>>;
+
       if (axiosError.response) {
-        // 서버에서 에러 응답을 보낸 경우
         return axiosError.response.data;
+      } else if (axiosError.request) {
+        return {
+          success: false,
+          statusCode: 0,
+          data: null,
+          error: {
+            code: 'NO_RESPONSE',
+            message: 'No response was received from the server',
+          },
+        };
       }
     }
 

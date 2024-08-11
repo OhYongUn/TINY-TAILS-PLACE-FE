@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
-import { ApiResponse, LogoutResponseData } from '@app/interface/auth/authTypes';
+import { apiRequest } from '@app/interface/ApiResponse';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,10 +10,12 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const response = await axios.post<ApiResponse<LogoutResponseData>>(
+    const response = await apiRequest<null>(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+      'POST',
       { email: body.email },
     );
+
     return NextResponse.json(response.data);
   } catch (error: any) {
     const errorData = error.response?.data || {};

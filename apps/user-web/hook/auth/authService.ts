@@ -1,52 +1,94 @@
-import axios from 'axios';
-import {
-  LoginData,
-  LoginResponseData,
-  LogoutResponseData,
-  SignUpData,
-  SignUpResponseData,
-} from '@app/interface/auth/authTypes';
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  ApiSuccessResponse,
-} from '@app/interface/ApiResponse';
+import { useState } from 'react';
+import { User } from '@app/interface/user/user';
+import { apiRequest, useApiData } from '@app/interface/ApiResponse';
+import useUserStore from '@app/store/userStore';
+import { LogoutResponseData } from '@app/interface/auth/authTypes';
 
-export async function useLogin(
-  data: LoginData,
-): Promise<ApiResponse<LoginResponseData>> {
-  return apiRequest<LoginResponseData>('/api/auth/login', data);
+interface LoginData {
+  email: string;
+  password: string;
 }
 
-export async function useSignUp(
-  data: SignUpData,
-): Promise<ApiResponse<SignUpResponseData>> {
-  return apiRequest<SignUpResponseData>('/api/auth/signup', data);
+interface LoginResponseData {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
+interface logoutData {
+  email: string;
 }
 
-export async function useLogout(
-  email: string,
-): Promise<ApiResponse<LogoutResponseData>> {
-  if (!email) {
-    throw new Error('Email is required for logout');
-  }
-  return apiRequest<LogoutResponseData>('/api/auth/logout', { email });
-}
+export function useLogin() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const setUser = useUserStore((state) => state.setUser);
 
-async function apiRequest<T>(url: string, data: any): Promise<ApiResponse<T>> {
-  try {
-    const response = await axios.post<ApiSuccessResponse<T>>(url, data);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      return error.response.data as ApiErrorResponse;
+  const login = async (data: LoginData) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiRequest<LoginResponseData>(
+        '/api/auth/login',
+        'POST',
+        data,
+      );
+      const { data: loginData, error: apiError } = useApiData(response);
+
+      if (loginData) {
+        const { user, accessToken, refreshToken } = loginData;
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        setUser(user);
+        return { success: true, user };
+      } else {
+        setError(apiError?.message || '로그인에 실패했습니다.');
+        return { success: false, error: apiError?.message };
+      }
+    } catch (err) {
+      setError('로그인 중 예기치 못한 오류가 발생했습니다.');
+      return {
+        success: false,
+        error: '로그인 중 예기치 못한 오류가 발생했습니다.',
+      };
+    } finally {
+      setIsLoading(false);
     }
-    return {
-      success: false,
-      statusCode: 500,
-      timestamp: new Date().toISOString(),
-      message: 'An unexpected error occurred',
-      path: url,
-    };
-  }
+  };
+
+  return { login, isLoading, error };
+}
+
+export function useLogout() {
+  const { clearUser } = useUserStore();
+
+  const logout = async (data: logoutData) => {
+    try {
+      const response = await apiRequest<null>('/api/auth/logout', 'POST', data);
+      const { data: responseData, error: apiError } = useApiData(response);
+
+      if (apiError) {
+        return {
+          success: false,
+          error: apiError.message,
+        };
+      }
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      clearUser();
+      return {
+        success: true,
+      };
+    } catch (err) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      clearUser(); // 유저 정보를 클리어
+      return {
+        success: false,
+        error: '',
+      };
+    }
+  };
+
+  return { logout };
 }

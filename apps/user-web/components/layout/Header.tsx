@@ -19,27 +19,19 @@ const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
   const { user, isLoggedIn, clearUser } = useUserStore();
-
+  const { logout } = useLogout(); // useLogout 훅을 호출하여 logout 함수를 가져옴
   const handleLogout = async () => {
     try {
       if (!user?.email) {
         throw new Error('User email not found');
       }
 
-      const response = await useLogout(user?.email);
+      const response = await logout({ email: user.email }); // logout 함수에 email을 전달
 
-      if ('success' in response && response.success) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        clearUser();
-      } else {
-        if ('message' in response) {
-          console.error('Logout failed:', response?.message);
-        }
+      if (response.success) {
+        clearUser(); // 유저 정보를 클리어
       }
-    } catch (error: any) {
-      console.error('Logout error:', error);
-    }
+    } catch (error: any) {}
   };
 
   return (
