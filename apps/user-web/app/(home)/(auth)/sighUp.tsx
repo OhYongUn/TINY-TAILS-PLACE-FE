@@ -10,8 +10,8 @@ import {
 import { Button } from '@repo/ui/components/ui/button';
 import { Label } from '@repo/ui/components/ui/label';
 import { Input } from '@repo/ui/components/ui/input';
-import { useSignUp } from '@app/hook/auth/authService';
 import { ModalInterface } from '@app/interface/compontes/interface';
+import { useSignUp } from '@app/hook/auth/authService';
 
 type SignUpFormValues = {
   name: string;
@@ -31,7 +31,7 @@ const SignUp = ({ isSignUpOpen, setIsSignUpOpen }: ModalInterface) => {
     reset,
   } = useForm<SignUpFormValues>();
   const [phone, setPhone] = useState('');
-  const [error, setError] = useState('');
+  const { signUp, isLoading, error } = useSignUp();
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -50,26 +50,22 @@ const SignUp = ({ isSignUpOpen, setIsSignUpOpen }: ModalInterface) => {
   };
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
-    try {
-      const response = await useSignUp(data);
-      console.log('response', response);
-
-      if ('success' in response && response.success) {
-        console.log('Sign up successful:', response.data.message);
-        alert('회원가입이 성공하엿습니다. 로그인 해주세요');
-        setValue('phone', '');
-        reset();
-        if (isSignUpOpen) {
-          setIsSignUpOpen?.(false);
-        }
-      } else {
-        if ('message' in response) {
-          setError(response.message || '회원가입에 실패했습니다.');
-        }
+    const SighUpdata = {
+      name: data.name,
+      email: data.email,
+      phone: phone,
+      password: data.password,
+    };
+    const result = await signUp(SighUpdata);
+    if (result.success) {
+      alert('회원가입이 성공하엿습니다. 로그인 해주세요');
+      setValue('phone', '');
+      reset();
+      if (isSignUpOpen) {
+        setIsSignUpOpen?.(false);
       }
-    } catch (error: any) {
-      console.error('Sign up error:', error);
-      setError(error.message || '회원가입 중 오류가 발생했습니다.');
+    } else {
+      console.error('회원가입 실패:', result.error);
     }
   };
 
@@ -145,6 +141,13 @@ const SignUp = ({ isSignUpOpen, setIsSignUpOpen }: ModalInterface) => {
             </Label>
           </div>
         </div>
+
+        {error && (
+          <div className="mt-4 mb-4 text-red-500 text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <DialogFooter>
           <Button type="submit" className="w-full">
             회원가입

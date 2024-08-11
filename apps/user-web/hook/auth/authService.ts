@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User } from '@app/interface/user/user';
 import { apiRequest, useApiData } from '@app/interface/ApiResponse';
 import useUserStore from '@app/store/userStore';
-import { LogoutResponseData } from '@app/interface/auth/authTypes';
+import { SignUpData, SignUpResponseData } from '@app/interface/auth/authTypes';
 
 interface LoginData {
   email: string;
@@ -91,4 +91,40 @@ export function useLogout() {
   };
 
   return { logout };
+}
+export function useSignUp() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const signUp = async (data: SignUpData) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiRequest<SignUpResponseData>(
+        '/api/auth/signup',
+        'POST',
+        data,
+      );
+      const { data: SignUpResponseData, error: apiError } =
+        useApiData(response);
+      if (response.success) {
+        return {
+          success: true,
+          message: '회원가입에 성공하셧습니다.',
+        };
+      } else {
+        setError(response.error?.message || '회원가입에 실패했습니다.');
+        return { success: false, error: response.error?.message };
+      }
+    } catch (err) {
+      const errorMessage = '회원가입 중 예기치 못한 오류가 발생했습니다.';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { signUp, isLoading, error };
 }

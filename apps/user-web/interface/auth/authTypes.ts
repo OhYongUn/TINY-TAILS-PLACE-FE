@@ -1,4 +1,4 @@
-import {User} from "@app/interface/user/user";
+import { User } from '@app/interface/user/user';
 
 export interface LoginData {
   email: string;
@@ -17,6 +17,7 @@ export interface SignUpData {
   email: string;
   password: string;
   name: string;
+  phone: string;
 }
 
 export interface SignUpResponseData {

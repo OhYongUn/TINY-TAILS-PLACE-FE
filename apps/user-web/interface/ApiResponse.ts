@@ -13,13 +13,9 @@ export async function apiRequest<T>(
   data?: any,
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T>> {
-  const isServer = typeof window === 'undefined';
-  const baseURL = isServer ? process.env.NEXT_PUBLIC_API_URL : '';
-  const fullUrl = url.startsWith('http') ? url : `${baseURL}${url}`;
   try {
-    console.log('fullUrl', fullUrl);
     const response = await axios({
-      url: fullUrl,
+      url: url,
       method,
       data,
       ...config,

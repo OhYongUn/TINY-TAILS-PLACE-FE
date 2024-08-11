@@ -25,12 +25,7 @@ const Header = () => {
       if (!user?.email) {
         throw new Error('User email not found');
       }
-
-      const response = await logout({ email: user.email }); // logout 함수에 email을 전달
-
-      if (response.success) {
-        clearUser(); // 유저 정보를 클리어
-      }
+      await logout({ email: user.email }); // logout 함수에 email을 전달
     } catch (error: any) {}
   };
 

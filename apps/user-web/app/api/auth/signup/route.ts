@@ -1,22 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
+import { SignUpResponseData } from '@app/interface/auth/authTypes';
+import { apiRequest, ApiResponse } from '@app/interface/ApiResponse';
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, data);
-    return NextResponse.json(
-      { success: true, data: response.data },
-      { status: response.status }
+    const body = await request.json();
+    const response = await apiRequest<SignUpResponseData>(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+      'POST',
+      body,
     );
+    return NextResponse.json(response);
   } catch (error: any) {
-    console.error('Sign up error:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error.response?.data?.message || 'An error occurred during sign up'
-      },
-      { status: error.response?.status || 500 }
+        statusCode: 500,
+        data: null,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: '회원가입 중 서버 내부 오류가 발생했습니다.',
+        },
+      } as ApiResponse<SignUpResponseData>,
+      { status: 500 },
     );
   }
 }
