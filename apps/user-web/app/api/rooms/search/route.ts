@@ -14,10 +14,8 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await apiRequest<SearchRoomResponse>(
-      '/rooms/available',
+      `${process.env.NEXT_PUBLIC_API_URL}/rooms/available?checkInDate=${params.checkInDate}&checkOutDate=${params.checkOutDate}`,
       'GET',
-      undefined,
-      { params },
     );
     console.log('sever', response);
     return NextResponse.json(response);
