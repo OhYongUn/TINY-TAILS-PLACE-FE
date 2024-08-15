@@ -11,7 +11,7 @@ import { Room } from '@app/interface/rooms/roomType';
 import { useRoomSearch } from '@app/hook/room/roomServcie';
 import { useBookingStore } from '@app/store/bookingStore';
 
-const BookingForm: React.FC = () => {
+const BookingForm = () => {
   const [numPets, setNumPets] = useState<string>('');
   const { isLoading, error, performSearch } = useRoomSearch();
   const { setAvailableRooms, setDateRange, dateRange } = useBookingStore();

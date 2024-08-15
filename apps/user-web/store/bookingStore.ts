@@ -8,6 +8,7 @@ interface BookingState {
   showRoomDetails: boolean;
   showReservationForm: boolean;
   dateRange: DateRange | undefined;
+  hasSearched: boolean;
   setAvailableRooms: (rooms: Room[]) => void;
   setSelectedRoom: (room: Room | null) => void;
   openRoomDetails: (room: Room) => void;
@@ -15,6 +16,7 @@ interface BookingState {
   openReservationForm: () => void;
   closeReservationForm: () => void;
   setDateRange: (range: DateRange | undefined) => void;
+  setHasSearched: (value: boolean) => void;
 }
 
 export const useBookingStore = create<BookingState>((set) => ({
@@ -23,11 +25,14 @@ export const useBookingStore = create<BookingState>((set) => ({
   showRoomDetails: false,
   showReservationForm: false,
   dateRange: undefined,
-  setAvailableRooms: (rooms) => set({ availableRooms: rooms }),
+  hasSearched: false,
+  setAvailableRooms: (rooms) =>
+    set({ availableRooms: rooms, hasSearched: true }),
   setSelectedRoom: (room) => set({ selectedRoom: room }),
   openRoomDetails: (room) => set({ selectedRoom: room, showRoomDetails: true }),
   closeRoomDetails: () => set({ showRoomDetails: false }),
   openReservationForm: () => set({ showReservationForm: true }),
   closeReservationForm: () => set({ showReservationForm: false }),
   setDateRange: (range) => set({ dateRange: range }),
+  setHasSearched: (value) => set({ hasSearched: value }),
 }));

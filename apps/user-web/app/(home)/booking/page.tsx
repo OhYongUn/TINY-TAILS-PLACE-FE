@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import ReservationForm from '../../../components/reservationForm';
 import BookingForm from '../../../components/bookingForm';
 import RoomDetails from '../../../components/roomDetails';
 import RoomList from '../../../components/roomList';
-import { useBookingStore } from '@app/store/bookingStore';
 
 const BookingsPage = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col">
       <BookingForm />
-      <RoomList />
+      <div className="min-h-[350px]">
+        <RoomList />
+      </div>
       <RoomDetails />
       <ReservationForm />
     </div>

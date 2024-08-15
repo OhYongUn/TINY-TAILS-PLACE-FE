@@ -18,7 +18,7 @@ export default function ConditionalHeaderFooter({
     <>
       {pathname === '/streaming' && <StreamingHeader />}
       {showHeaderFooter && <Header />}
-      {children}
+      <main className="flex-grow">{children}</main>
       {showHeaderFooter && <Footer />}
     </>
   );
