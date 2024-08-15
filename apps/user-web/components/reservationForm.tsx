@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useForm, Controller, UseFormReturn } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import {
   Dialog,
   DialogContent,
@@ -20,56 +20,43 @@ import {
 import { Checkbox } from '@repo/ui/components/ui/checkbox';
 import { Textarea } from '@repo/ui/components/ui/textarea';
 import { useBookingStore } from '@app/store/bookingStore';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@repo/ui/components/ui/alert-dialog';
 import { usePayment } from '@app/hook/payment/paymentService';
+import PaymentConfirmation from '@app/components/paymentConfirmation';
 
 interface FormData {
+  roomId: number;
+  roomName: string;
+  checkInDate: string;
+  checkOutDate: string;
   petCount: string;
   requestedLateCheckout: boolean;
   requestedEarlyCheckin: boolean;
   specialRequests: string;
 }
 
-// 선택된 방 인터페이스
-interface SelectedRoom {
-  name: string;
-  price: number;
-}
-
-// 날짜 범위 인터페이스
-interface DateRange {
-  from: Date | null;
-  to: Date | null;
-}
-
-export const ReservationForm: React.FC = () => {
+const ReservationForm = () => {
   const { showReservationForm, closeReservationForm, selectedRoom, dateRange } =
     useBookingStore();
+  const [showPaymentConfirmation, setShowPaymentConfirmation] = useState(false);
   const { processPayment, isLoading, error } = usePayment();
-  const [showPaymentAlert, setShowPaymentAlert] = useState<boolean>(false);
-  const { control, handleSubmit, watch }: UseFormReturn<FormData> =
-    useForm<FormData>({
-      defaultValues: {
-        petCount: '1',
-        requestedLateCheckout: false,
-        requestedEarlyCheckin: false,
-        specialRequests: '',
-      },
-    });
+
+  const { control, handleSubmit, watch, setValue } = useForm<FormData>({
+    defaultValues: {
+      roomId: selectedRoom?.id,
+      roomName: selectedRoom?.name || '',
+      checkInDate: dateRange?.from ? dateRange.from.toISOString() : '',
+      checkOutDate: dateRange?.to ? dateRange.to.toISOString() : '',
+      petCount: '1',
+      requestedLateCheckout: false,
+      requestedEarlyCheckin: false,
+      specialRequests: '',
+    },
+  });
 
   const watchLateCheckout = watch('requestedLateCheckout');
   const watchEarlyCheckin = watch('requestedEarlyCheckin');
 
-  const basePrice = (selectedRoom as SelectedRoom)?.price ?? 0;
+  const basePrice = selectedRoom?.price ?? 0;
 
   const calculateAdditionalFees = (data: FormData): number => {
     let fees = 0;
@@ -82,90 +69,66 @@ export const ReservationForm: React.FC = () => {
     return basePrice + calculateAdditionalFees(data);
   };
 
-  const handlePaymentClick = (data: FormData) => {
-    setShowPaymentAlert(true);
-  };
-
-  const handlePaymentConfirm = async (data: FormData) => {
-    setShowPaymentAlert(false);
-    const totalPrice = calculateTotalPrice(data);
-    const additionalFees = calculateAdditionalFees(data);
-    const paymentData: PaymentData = {
-      pg: 'inicis',
-      pay_method: 'card',
-      merchant_uid: `mid_${new Date().getTime()}`,
-      amount: basePrice, // 선결제 금액 (기본 요금만)
-      name: `${(selectedRoom as SelectedRoom).name} 예약`,
-      buyer_email: 'buyer@example.com', // 실제 구매자 이메일로 대체해야 합니다
-      buyer_name: '구매자명', // 실제 구매자 이름으로 대체해야 합니다
-      buyer_tel: '010-1234-5678', // 실제 구매자 전화번호로 대체해야 합니다
-    };
-
-    try {
-      const result = await processPayment(paymentData);
-      console.log('결제 성공', result);
-      // 여기에 결제 성공 후 처리 로직을 추가하세요 (예: 서버에 결제 정보 저장)
-    } catch (err) {
-      console.error('결제 실패', err);
-      alert('결제에 실패했습니다. 다시 시도해 주세요.');
-    }
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    setShowPaymentConfirmation(true);
   };
 
   return (
     <>
       <Dialog open={showReservationForm} onOpenChange={closeReservationForm}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">예약하기</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit(handlePaymentClick)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Card className="border-none shadow-none">
               <CardContent className="space-y-4 p-0">
                 <div>
-                  <Label htmlFor="room-name" className="text-sm font-medium">
+                  <Label htmlFor="roomName" className="text-sm font-medium">
                     선택한 객실
                   </Label>
-                  <Input
-                    id="room-name"
-                    value={selectedRoom?.name || ''}
-                    readOnly
-                    className="mt-1"
+                  <Controller
+                    name="roomName"
+                    control={control}
+                    render={({ field }) => <Input {...field} readOnly />}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="check-in" className="text-sm font-medium">
-                    체크인 날짜
-                  </Label>
-                  <Input
-                    id="check-in"
-                    value={
-                      dateRange?.from ? dateRange.from.toLocaleDateString() : ''
-                    }
-                    readOnly
-                    className="mt-1"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    기본 체크인 시간: 오후 4시
-                  </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label
+                      htmlFor="checkInDate"
+                      className="text-sm font-medium"
+                    >
+                      체크인 날짜
+                    </Label>
+                    <Controller
+                      name="checkInDate"
+                      control={control}
+                      render={({ field }) => <Input {...field} readOnly />}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      기본 체크인 시간: 오후 4시
+                    </p>
+                  </div>
+                  <div>
+                    <Label
+                      htmlFor="checkOutDate"
+                      className="text-sm font-medium"
+                    >
+                      체크아웃 날짜
+                    </Label>
+                    <Controller
+                      name="checkOutDate"
+                      control={control}
+                      render={({ field }) => <Input {...field} readOnly />}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      기본 체크아웃 시간: 오후 12시 (정오)
+                    </p>
+                  </div>
                 </div>
                 <div>
-                  <Label htmlFor="check-out" className="text-sm font-medium">
-                    체크아웃 날짜
-                  </Label>
-                  <Input
-                    id="check-out"
-                    value={
-                      dateRange?.to ? dateRange.to.toLocaleDateString() : ''
-                    }
-                    readOnly
-                    className="mt-1"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    기본 체크아웃 시간: 오후 12시 (정오)
-                  </p>
-                </div>
-                <div>
-                  <Label htmlFor="pet-count" className="text-sm font-medium">
+                  <Label htmlFor="petCount" className="text-sm font-medium">
                     반려동물 수
                   </Label>
                   <Controller
@@ -257,46 +220,6 @@ export const ReservationForm: React.FC = () => {
                     )}
                   />
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-2">요금 정보</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>기본 요금:</span>
-                      <span>{basePrice.toLocaleString()}원</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>추가 요금:</span>
-                      <span>
-                        {calculateAdditionalFees(watch()).toLocaleString()}원
-                      </span>
-                    </div>
-                    {calculateAdditionalFees(watch()) > 0 && (
-                      <div className="text-xs text-gray-500">
-                        {watchLateCheckout && (
-                          <p>
-                            - 레이트 체크아웃:{' '}
-                            {(basePrice * 0.5).toLocaleString()}원
-                          </p>
-                        )}
-                        {watchEarlyCheckin && (
-                          <p>
-                            - 얼리 체크인: {(basePrice * 0.5).toLocaleString()}
-                            원
-                          </p>
-                        )}
-                      </div>
-                    )}
-                    <div className="flex justify-between font-bold">
-                      <span>총 요금:</span>
-                      <span>
-                        {calculateTotalPrice(watch()).toLocaleString()}원
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    * 레이트 체크아웃 및 얼리 체크인 요금은 후불로 결제됩니다.
-                  </p>
-                </div>
               </CardContent>
               <CardFooter className="px-0 pt-4">
                 <Button type="submit" className="w-full">
@@ -305,32 +228,50 @@ export const ReservationForm: React.FC = () => {
               </CardFooter>
             </Card>
           </form>
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">요금 정보</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span>기본 요금:</span>
+                <span>{basePrice.toLocaleString()}원</span>
+              </div>
+              <div className="flex justify-between">
+                <span>추가 요금:</span>
+                <span>
+                  {calculateAdditionalFees(watch()).toLocaleString()}원
+                </span>
+              </div>
+              {calculateAdditionalFees(watch()) > 0 && (
+                <div className="text-xs text-gray-500">
+                  {watchLateCheckout && (
+                    <p>
+                      - 레이트 체크아웃: {(basePrice * 0.5).toLocaleString()}원
+                    </p>
+                  )}
+                  {watchEarlyCheckin && (
+                    <p>- 얼리 체크인: {(basePrice * 0.5).toLocaleString()}원</p>
+                  )}
+                </div>
+              )}
+              <div className="flex justify-between font-bold">
+                <span>총 요금:</span>
+                <span>{calculateTotalPrice(watch()).toLocaleString()}원</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              * 레이트 체크아웃 및 얼리 체크인 요금은 후불로 결제됩니다.
+            </p>
+          </div>
         </DialogContent>
       </Dialog>
-      <AlertDialog open={showPaymentAlert} onOpenChange={setShowPaymentAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>결제 확인</AlertDialogTitle>
-            <AlertDialogDescription>
-              <p>실제 결제 금액: {basePrice.toLocaleString()}원</p>
-              {calculateAdditionalFees(watch()) > 0 && (
-                <p className="text-sm text-gray-500">
-                  * 추가 요금{' '}
-                  {calculateAdditionalFees(watch()).toLocaleString()}원은
-                  체크아웃 시 현장에서 결제됩니다.
-                </p>
-              )}
-              결제를 진행하시겠습니까?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handlePaymentConfirm(watch())}>
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {showPaymentConfirmation && (
+        <PaymentConfirmation
+          formData={watch()}
+          basePrice={basePrice}
+          additionalFees={calculateAdditionalFees(watch())}
+          onClose={() => setShowPaymentConfirmation(false)}
+        />
+      )}
       {isLoading && <div>결제 처리 중...</div>}
       {error && <div>오류 발생: {error}</div>}
     </>
