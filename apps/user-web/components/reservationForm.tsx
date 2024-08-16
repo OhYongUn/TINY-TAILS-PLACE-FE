@@ -20,7 +20,6 @@ import {
 import { Checkbox } from '@repo/ui/components/ui/checkbox';
 import { Textarea } from '@repo/ui/components/ui/textarea';
 import { useBookingStore } from '@app/store/bookingStore';
-import { usePayment } from '@app/hook/payment/paymentService';
 import PaymentConfirmation from '@app/components/paymentConfirmation';
 
 interface FormData {
@@ -38,7 +37,6 @@ const ReservationForm = () => {
   const { showReservationForm, closeReservationForm, selectedRoom, dateRange } =
     useBookingStore();
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState(false);
-  const { isLoading, error } = usePayment();
 
   const { control, handleSubmit, watch, setValue } = useForm<FormData>({
     defaultValues: {

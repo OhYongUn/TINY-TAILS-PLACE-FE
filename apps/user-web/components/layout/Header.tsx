@@ -1,33 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Input } from '@repo/ui/components/ui/input';
 import { Button } from '@repo/ui/components/ui/button';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@repo/ui/components/ui/avatar';
 import Link from 'next/link';
 import { PawPrintIcon, SearchIcon } from '@repo/ui/components/ui/icons';
 import LoginModal from '../../../user-web/app/(home)/(auth)/loginModal';
 import SighUpModal from '../../../user-web/app/(home)/(auth)/sighUpModal';
-import useUserStore from '@app/store/userStore';
-import { useLogout } from '@app/hook/auth/authService';
+import AuthSection from '@app/components/authSection';
 
 const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState<boolean>(false);
-  const { user, isLoggedIn, clearUser } = useUserStore();
-  const { logout } = useLogout(); // useLogout 훅을 호출하여 logout 함수를 가져옴
-  const handleLogout = async () => {
-    try {
-      if (!user?.email) {
-        throw new Error('User email not found');
-      }
-      await logout({ email: user.email }); // logout 함수에 email을 전달
-    } catch (error: any) {}
-  };
 
   return (
     <>
@@ -39,28 +22,14 @@ const Header = () => {
           </Link>
         </div>
         <div className="flex items-center space-x-4">
-          <div className="relative w-64">
+          {/*<div className="relative w-64">
             <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input type="search" placeholder="Search" className="w-full pl-8" />
-          </div>
+          </div>*/}
           <Link href="/booking">
-            <Button variant="secondary">Book Now</Button>
+            <Button variant="secondary">예약하기</Button>
           </Link>
-          {isLoggedIn ? (
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src={user?.avatarUrl || '/placeholder-user.jpg'} />
-                <AvatarFallback>{user?.initials || 'U'}</AvatarFallback>
-              </Avatar>
-              <Button variant="outline" onClick={handleLogout}>
-                Logout
-              </Button>
-            </div>
-          ) : (
-            <Button variant="outline" onClick={() => setIsLoginOpen(true)}>
-              Login
-            </Button>
-          )}
+          <AuthSection setIsLoginOpen={setIsLoginOpen} />
         </div>
       </header>
       <LoginModal
