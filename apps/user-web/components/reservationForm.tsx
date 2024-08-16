@@ -31,14 +31,14 @@ interface FormData {
   petCount: string;
   requestedLateCheckout: boolean;
   requestedEarlyCheckin: boolean;
-  specialRequests: string;
+  request: string;
 }
 
 const ReservationForm = () => {
   const { showReservationForm, closeReservationForm, selectedRoom, dateRange } =
     useBookingStore();
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState(false);
-  const { processPayment, isLoading, error } = usePayment();
+  const { isLoading, error } = usePayment();
 
   const { control, handleSubmit, watch, setValue } = useForm<FormData>({
     defaultValues: {
@@ -49,9 +49,18 @@ const ReservationForm = () => {
       petCount: '1',
       requestedLateCheckout: false,
       requestedEarlyCheckin: false,
-      specialRequests: '',
+      request: '',
     },
   });
+
+  useEffect(() => {
+    if (selectedRoom) {
+      setValue('roomId', selectedRoom.id);
+      setValue('roomName', selectedRoom.name);
+    }
+    if (dateRange?.from) setValue('checkInDate', dateRange.from.toISOString());
+    if (dateRange?.to) setValue('checkOutDate', dateRange.to.toISOString());
+  }, [selectedRoom, dateRange, setValue]);
 
   const watchLateCheckout = watch('requestedLateCheckout');
   const watchEarlyCheckin = watch('requestedEarlyCheckin');
@@ -201,18 +210,15 @@ const ReservationForm = () => {
                   </p>
                 </div>
                 <div>
-                  <Label
-                    htmlFor="specialRequests"
-                    className="text-sm font-medium"
-                  >
+                  <Label htmlFor="request" className="text-sm font-medium">
                     요청사항
                   </Label>
                   <Controller
-                    name="specialRequests"
+                    name="request"
                     control={control}
                     render={({ field }) => (
                       <Textarea
-                        id="specialRequests"
+                        id="rquests"
                         placeholder="요청사항이 있다면 입력해주세요."
                         className="mt-1"
                         {...field}
@@ -269,11 +275,12 @@ const ReservationForm = () => {
           formData={watch()}
           basePrice={basePrice}
           additionalFees={calculateAdditionalFees(watch())}
-          onClose={() => setShowPaymentConfirmation(false)}
+          onClose={() => {
+            setShowPaymentConfirmation(false);
+            closeReservationForm();
+          }}
         />
       )}
-      {isLoading && <div>결제 처리 중...</div>}
-      {error && <div>오류 발생: {error}</div>}
     </>
   );
 };

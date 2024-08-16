@@ -1,20 +1,32 @@
-export interface paymentData {
-  storeId: string;
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+}
+export interface CreateBookingDto {
+  userId: number;
+  userName: string;
+  userEmail: string;
+  userPhone: string;
+  roomDetailId: number;
+  checkInDate: Date;
+  checkOutDate: Date;
+  requestedLateCheckout: boolean;
+  requestedEarlyCheckin: boolean;
+  petCount: number;
+  basePrice: number;
+  additionalFees: number;
+  totalPrice: number;
+  status: BookingStatus;
+  request?: string;
+}
+export interface InitiateBookingResponseDto {
+  bookingId: string;
   paymentId: string;
-  orderName: string;
-  totalAmount: number;
-  currency: string;
-  payMethod: string;
-  channelKey: string;
-  customer: {
-    customerId: string;
-    fullName: string;
-    phoneNumber: string;
-    email: string;
-    address: {
-      country: string; //KR
-      addressLine1: string;
-      addressLine2: string;
-    };
-  };
+  amount: number;
+}
+
+export interface ConfirmBookingResponseDto {
+  bookingId: string;
+  paymentId: string;
 }
