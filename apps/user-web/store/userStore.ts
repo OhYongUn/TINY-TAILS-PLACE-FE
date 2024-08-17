@@ -1,7 +1,7 @@
 // stores/userStore.ts
 import { create } from 'zustand';
-import {User} from "@app/interface/user/user";
-import {createJSONStorage, persist} from 'zustand/middleware';
+import { User } from '@app/interface/user/user';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface UserState {
   user: User | null;
@@ -9,14 +9,20 @@ interface UserState {
   getAccessToken: () => string | null;
   getRefreshToken: () => string | null;
   setUser: (user: User) => void;
+  updateUser: (userData: Partial<User>) => void;
   clearUser: () => void;
 }
+
 const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
       user: null,
       isLoggedIn: false,
       setUser: (user: User) => set({ user, isLoggedIn: true }),
+      updateUser: (userData: Partial<User>) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...userData } : null,
+        })),
       clearUser: () => {
         set({ user: null, isLoggedIn: false });
         localStorage.removeItem('accessToken');
@@ -28,9 +34,12 @@ const useUserStore = create<UserState>()(
     {
       name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ user: state.user, isLoggedIn: state.isLoggedIn }),
-    }
-  )
+      partialize: (state) => ({
+        user: state.user,
+        isLoggedIn: state.isLoggedIn,
+      }),
+    },
+  ),
 );
 
 export default useUserStore;
