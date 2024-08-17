@@ -63,7 +63,7 @@ const AuthSection = ({ setIsLoginOpen }: AuthSectionProps) => {
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem>
             <Link
-              href="/my-info"
+              href="/profile"
               className="flex items-center gap-2"
               prefetch={false}
             >
@@ -73,7 +73,7 @@ const AuthSection = ({ setIsLoginOpen }: AuthSectionProps) => {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
-              href="/reservations"
+              href="/profile/reservations"
               className="flex items-center gap-2"
               prefetch={false}
             >

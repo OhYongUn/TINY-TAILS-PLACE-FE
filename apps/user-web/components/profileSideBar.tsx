@@ -1,8 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
 import {
-  PawPrintIcon,
   UserIcon,
   CalendarIcon,
   SettingsIcon,
@@ -10,7 +8,6 @@ import {
 import { usePathname } from 'next/navigation';
 
 const ProfileSideBar = () => {
-  const [activeMenuItem, setActiveMenuItem] = useState('profile');
   const pathname = usePathname();
 
   return (
