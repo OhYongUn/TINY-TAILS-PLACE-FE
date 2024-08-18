@@ -2,8 +2,9 @@ import '@repo/ui/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cn } from '@repo/ui/lib/utils';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import ConditionalHeaderFooter from '@app/components/ConditionalHeaderFooter';
+import { AuthProvider } from '@app/app/authProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 const fontHeading = Inter({
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={cn('antialiased', fontHeading.variable, fontBody.variable)}
       >
-        <ConditionalHeaderFooter>{children}</ConditionalHeaderFooter>
+        <AuthProvider>
+          <ConditionalHeaderFooter>{children}</ConditionalHeaderFooter>
+        </AuthProvider>
       </body>
     </html>
   );

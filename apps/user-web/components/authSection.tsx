@@ -1,3 +1,4 @@
+'use client';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,11 +22,12 @@ import {
 import Link from 'next/link';
 import { useLogout } from '@app/hook/auth/authService';
 import useUserStore from '@app/store/userStore';
-import { ModalInterface } from '@app/interface/compontes/interface';
+import { useRouter } from 'next/navigation';
 interface AuthSectionProps {
   setIsLoginOpen: Dispatch<SetStateAction<boolean>>;
 }
 const AuthSection = ({ setIsLoginOpen }: AuthSectionProps) => {
+  const router = useRouter();
   const { user, isLoggedIn, clearUser } = useUserStore();
 
   const { logout } = useLogout(); // useLogout 훅을 호출하여 logout 함수를 가져옴
@@ -35,6 +37,7 @@ const AuthSection = ({ setIsLoginOpen }: AuthSectionProps) => {
         throw new Error('User email not found');
       }
       await logout({ email: user.email }); // logout 함수에 email을 전달
+      router.push('/'); // 메인 페이지로 리다이렉트
     } catch (error: any) {}
   };
   if (!isLoggedIn) {
