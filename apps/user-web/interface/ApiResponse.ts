@@ -24,42 +24,40 @@ export async function apiRequest<T>(
       let token: string | null = null;
       if (typeof window === 'undefined') {
         // 서버 사이드에서 실행 중
-        console.log('Running on server side');
         if (config?.headers?.['Authorization']) {
           token = config.headers['Authorization'].replace('Bearer ', '');
-          console.log('Token from config headers:', token);
         }
       } else {
         // 클라이언트 사이드에서 실행 중
-        console.log('Running on client side');
         token = localStorage.getItem('accessToken');
-        console.log('Token from localStorage:', token);
       }
 
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-        console.log('Authorization header set:', headers['Authorization']);
       } else {
-        console.warn('Token not found');
-        throw new Error('Authentication required but token not found');
+        console.warn('Token not found for authenticated request');
       }
     }
 
-    console.log('Final headers:', headers);
-
-    const response = await axios({
-      url: url,
+    let axiosConfig: AxiosRequestConfig = {
+      url,
       method,
-      data,
-      ...config,
       headers,
-    });
+      ...config,
+    };
 
-    console.log('API Response:', response.data);
+    // GET 요청의 경우 data를 params로 전달
+    if (method === 'GET' && data) {
+      axiosConfig.params = data;
+    } else if (method !== 'GET' && data) {
+      // POST, PUT, DELETE 요청의 경우 data를 요청 본문으로 전달
+      axiosConfig.data = data;
+    }
+
+    const response = await axios(axiosConfig);
+
     return response.data as ApiResponse<T>;
   } catch (error) {
-    console.error('API Request Error:', error);
-
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ApiResponse<T>>;
 
@@ -78,22 +76,6 @@ export async function apiRequest<T>(
           },
         };
       }
-    }
-
-    if (
-      error instanceof Error &&
-      error.message === 'Authentication required but token not found'
-    ) {
-      console.error('Auth Error: Token not found');
-      return {
-        success: false,
-        statusCode: 401,
-        data: null,
-        error: {
-          code: 'AUTH_REQUIRED',
-          message: 'Authentication is required for this request',
-        },
-      };
     }
 
     console.error('Unknown Error:', error);
