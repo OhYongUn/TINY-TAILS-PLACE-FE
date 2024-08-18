@@ -21,6 +21,7 @@ import {
   handlePhoneNumberChange,
   isValidPhoneNumber,
 } from '@app/utills/phoneMask';
+import { useAlert } from '@app/components/provider/alertDialogProvider';
 
 interface UserFormData {
   name: string;
@@ -32,6 +33,7 @@ const ProfilePage = () => {
   const { user } = useUserStore();
   const { updateUser, isLoading, error } = useUpdateUser();
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+  const { showAlert } = useAlert();
 
   const {
     register,
@@ -48,10 +50,14 @@ const ProfilePage = () => {
   const onSubmit = async (data: UserFormData) => {
     try {
       const result = await updateUser(data);
+      console.log(result);
       if (result.success) {
+        showAlert('성공', `${result.message}`, 'success');
         console.log(result.message);
         // 성공 메시지 표시 로직 (예: 토스트 알림)
       } else {
+        showAlert('실패', `회원 정보 수정이 실패하였습니다.`, 'error');
+
         console.error(result.error);
         // 오류 메시지 표시 로직
       }

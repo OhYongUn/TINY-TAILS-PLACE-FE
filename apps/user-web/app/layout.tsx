@@ -4,7 +4,8 @@ import { Inter } from 'next/font/google';
 import { cn } from '@repo/ui/lib/utils';
 import React, { ReactNode } from 'react';
 import ConditionalHeaderFooter from '@app/components/ConditionalHeaderFooter';
-import { AuthProvider } from '@app/app/authProvider';
+import { AlertDialogProvider } from '@app/components/provider/alertDialogProvider';
+import { AuthProvider } from '@app/components/provider/authProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 const fontHeading = Inter({
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body
         className={cn('antialiased', fontHeading.variable, fontBody.variable)}
       >
-        <AuthProvider>
-          <ConditionalHeaderFooter>{children}</ConditionalHeaderFooter>
-        </AuthProvider>
+        <AlertDialogProvider>
+          <AuthProvider>
+            <ConditionalHeaderFooter>{children}</ConditionalHeaderFooter>
+          </AuthProvider>
+        </AlertDialogProvider>
       </body>
     </html>
   );

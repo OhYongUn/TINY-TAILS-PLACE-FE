@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiRequest, ApiResponse } from '@app/interface/ApiResponse';
-import { UpdateUserData } from '@app/interface/user/user';
-import { SignUpResponseData } from '@app/interface/auth/authTypes'; // UpdateUserData 인터페이스 정의 필요
+import { UpdateUserResponse } from '@app/interface/user/user';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -26,12 +25,12 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const response = await apiRequest<SignUpResponseData>(
+    const response = await apiRequest<UpdateUserResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/users/profile`,
       'PUT',
       body,
       true,
-      { headers: { Authorization: clientToken } },
+      { headers: { Authorization: `Bearer ${clientToken}` } },
     );
     console.log('server response: ' + JSON.stringify(response));
     return NextResponse.json(response);
