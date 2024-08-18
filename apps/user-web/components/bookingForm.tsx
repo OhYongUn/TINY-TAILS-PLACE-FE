@@ -36,8 +36,8 @@ const BookingForm = () => {
   const findAvailableRooms = async () => {
     if (dateRange?.from && dateRange?.to) {
       const params = {
-        checkIn: formatDateToYYYYMMDD(dateRange.from),
-        checkOut: formatDateToYYYYMMDD(dateRange.to),
+        checkInDate: formatDateToYYYYMMDD(dateRange.from),
+        checkOutDate: formatDateToYYYYMMDD(dateRange.to),
       };
       const results = await performSearch(params);
       setAvailableRooms(results);

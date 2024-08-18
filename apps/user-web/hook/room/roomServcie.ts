@@ -7,8 +7,8 @@ export function useRoomSearch() {
   const [error, setError] = useState<string | null>(null);
 
   const performSearch = async (params: {
-    checkIn: string;
-    checkOut: string;
+    checkInDate: string;
+    checkOutDate: string;
   }): Promise<Room[]> => {
     setIsLoading(true);
     setError(null);
@@ -16,8 +16,8 @@ export function useRoomSearch() {
       const response = await apiRequest<Room[]>(
         '/api/rooms/search',
         'GET',
-        undefined,
-        { params },
+        params,
+        false,
       );
 
       const { data, error } = useApiData(response);
