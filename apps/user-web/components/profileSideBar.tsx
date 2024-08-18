@@ -4,6 +4,7 @@ import {
   UserIcon,
   CalendarIcon,
   SettingsIcon,
+  PawPrintIcon,
 } from '@repo/ui/components/ui/icons';
 import { usePathname } from 'next/navigation';
 
@@ -22,7 +23,7 @@ const ProfileSideBar = () => {
           }`}
         >
           <UserIcon className="h-5 w-5" />
-          <span>Profile</span>
+          <span>회원 정보</span>
         </Link>
         <Link
           href="/profile/pets"
@@ -32,9 +33,10 @@ const ProfileSideBar = () => {
               : 'hover:bg-muted'
           }`}
         >
-          <SettingsIcon className="h-5 w-5" />
-          <span>pets</span>
+          <PawPrintIcon className="h-5 w-5" />
+          <span>나의 애완 동물</span>
         </Link>
+
         <Link
           href="/profile/reservations"
           className={`flex items-center gap-2 rounded-md px-3 py-2 transition-colors ${
@@ -44,7 +46,7 @@ const ProfileSideBar = () => {
           }`}
         >
           <CalendarIcon className="h-5 w-5" />
-          <span>Reservations</span>
+          <span>예약 현황</span>
         </Link>
         <Link
           href="/profile/settings"
@@ -55,7 +57,7 @@ const ProfileSideBar = () => {
           }`}
         >
           <SettingsIcon className="h-5 w-5" />
-          <span>Settings</span>
+          <span>환경설정</span>
         </Link>
       </nav>
     </aside>

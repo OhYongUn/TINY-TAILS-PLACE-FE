@@ -38,7 +38,7 @@ const MobileProfileSideBar = () => {
             }`}
           >
             <UserIcon className="h-5 w-5" />
-            <span>Profile</span>
+            <span>회 정보</span>
           </Link>
           <Link
             href="/profile/pets"
@@ -49,7 +49,7 @@ const MobileProfileSideBar = () => {
             }`}
           >
             <PawPrintIcon className="h-5 w-5" />
-            <span>Pets</span>
+            <span>애완동물</span>
           </Link>
           <Link
             href="/profile/reservations"
@@ -60,7 +60,7 @@ const MobileProfileSideBar = () => {
             }`}
           >
             <CalendarIcon className="h-5 w-5" />
-            <span>Reservations</span>
+            <span>예약 현황</span>
           </Link>
           <Link
             href="/profile/settings"
@@ -71,7 +71,7 @@ const MobileProfileSideBar = () => {
             }`}
           >
             <SettingsIcon className="h-5 w-5" />
-            <span>Settings</span>
+            <span>환경설정</span>
           </Link>
         </nav>
       </SheetContent>
