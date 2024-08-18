@@ -17,3 +17,14 @@ export interface UpdateUserResponse {
   message?: string;
   error?: string;
 }
+
+export interface PasswordChangeData {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}

@@ -12,8 +12,10 @@ import {
 import { Label } from '@repo/ui/components/ui/label';
 import { Input } from '@repo/ui/components/ui/input';
 import { Button } from '@repo/ui/components/ui/button';
+import { useChangePassword } from '@app/hook/user/userService';
+import { useAlert } from '@app/components/provider/alertDialogProvider';
 
-interface PasswordChangeData {
+interface FormData {
   currentPassword: string;
   newPassword: string;
   confirmNewPassword: string;
@@ -25,27 +27,37 @@ interface PasswordChangeProps {
 }
 
 const PasswordChange = ({ isOpen, onOpenChange }: PasswordChangeProps) => {
+  const { changePassword, isLoading, error } = useChangePassword();
+  const { showAlert } = useAlert();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<PasswordChangeData>();
+  } = useForm<FormData>();
 
-  const onSubmit = async (data: PasswordChangeData) => {
+  const onSubmit = async (data: FormData) => {
     try {
-      // 여기에 실제 비밀번호 변경 API 호출 로직을 구현합니다.
-      // 예: await api.changePassword(data);
-      console.log('Password change request:', data);
+      const changePasswordData = {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      };
+      const result = await changePassword(changePasswordData);
 
-      // 성공 시 처리
-      alert('비밀번호가 성공적으로 변경되었습니다.');
+      if (result.success) {
+        showAlert('성공', `비밀번호가 변경 되었습니다`, 'success');
+      } else {
+        showAlert('실패', `${result.message}.`, 'error');
+      }
       onOpenChange(false);
       reset();
     } catch (error) {
-      // 오류 처리
-      console.error('비밀번호 변경 중 오류 발생:', error);
-      alert('비밀번호 변경에 실패했습니다. 다시 시도해 주세요.');
+      showAlert(
+        '실패',
+        '알수없는이유로 비밀번호 변경이 실패하였습니다',
+        'error',
+      );
     }
   };
 

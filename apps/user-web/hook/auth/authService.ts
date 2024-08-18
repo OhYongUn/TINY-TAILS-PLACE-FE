@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  UpdateUserData,
-  UpdateUserResponse,
-  User,
-} from '@app/interface/user/user';
+import { User } from '@app/interface/user/user';
 import { apiRequest, useApiData } from '@app/interface/ApiResponse';
 import useUserStore from '@app/store/userStore';
 import { SignUpData, SignUpResponseData } from '@app/interface/auth/authTypes';
@@ -131,51 +127,4 @@ export function useSignUp() {
   };
 
   return { signUp, isLoading, error };
-}
-
-export function useUpdateUser() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { updateUser: updateStoreUser, getAccessToken } = useUserStore();
-
-  const updateUser = async (data: UpdateUserData) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const token = getAccessToken();
-      const response = await apiRequest<UpdateUserResponse>(
-        '/api/user/update',
-        'PUT',
-        data,
-        true,
-        { headers: { 'Client-Authorization': token } },
-      );
-      const { data: updateData, error: apiError } = useApiData(response);
-
-      if (updateData) {
-        console.log('updateData', updateData);
-
-        //updateStoreUser(updateData);
-        return {
-          success: true,
-          message: '사용자 정보가 성공적으로 업데이트되었습니다.',
-        };
-      } else {
-        const errorMessage =
-          response.error?.message || '사용자 정보 업데이트에 실패했습니다.';
-        setError(errorMessage);
-        return { success: false, error: errorMessage };
-      }
-    } catch (err) {
-      const errorMessage =
-        '사용자 정보 업데이트 중 예기치 못한 오류가 발생했습니다.';
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return { updateUser, isLoading, error };
 }

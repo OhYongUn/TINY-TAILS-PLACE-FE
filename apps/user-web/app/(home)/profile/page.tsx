@@ -14,7 +14,6 @@ import { Label } from '@repo/ui/components/ui/label';
 import { Input } from '@repo/ui/components/ui/input';
 import useUserStore from '@app/store/userStore';
 import { Controller, useForm } from 'react-hook-form';
-import { useUpdateUser } from '@app/hook/auth/authService';
 import PasswordChange from '@app/components/passwordChange';
 import {
   formatPhoneNumber,
@@ -22,6 +21,7 @@ import {
   isValidPhoneNumber,
 } from '@app/utills/phoneMask';
 import { useAlert } from '@app/components/provider/alertDialogProvider';
+import { useUpdateUser } from '@app/hook/user/userService';
 
 interface UserFormData {
   name: string;
@@ -50,16 +50,10 @@ const ProfilePage = () => {
   const onSubmit = async (data: UserFormData) => {
     try {
       const result = await updateUser(data);
-      console.log(result);
       if (result.success) {
-        showAlert('성공', `${result.message}`, 'success');
-        console.log(result.message);
-        // 성공 메시지 표시 로직 (예: 토스트 알림)
+        showAlert('성공', `회원정보가 수정되었습니다.`, 'success');
       } else {
-        showAlert('실패', `회원 정보 수정이 실패하였습니다.`, 'error');
-
-        console.error(result.error);
-        // 오류 메시지 표시 로직
+        showAlert('실패', `${result.message}`, 'error');
       }
     } catch (error) {
       console.error('Error updating user info:', error);
@@ -123,15 +117,17 @@ const ProfilePage = () => {
                 <span className="text-red-500">{errors.phone.message}</span>
               )}
             </div>
-            <PasswordChange
-              isOpen={isPasswordChangeOpen}
-              onOpenChange={setIsPasswordChangeOpen}
-            />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="float-end">
             <Button type="submit">회원정보 수정</Button>
           </CardFooter>
         </form>
+        <div className="ml-5">
+          <PasswordChange
+            isOpen={isPasswordChangeOpen}
+            onOpenChange={setIsPasswordChangeOpen}
+          />
+        </div>
       </Card>
     </div>
   );

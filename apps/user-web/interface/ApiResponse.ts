@@ -93,8 +93,8 @@ export async function apiRequest<T>(
 
 export function useApiData<T>(apiResponse: ApiResponse<T>) {
   if (apiResponse.success) {
-    return { data: apiResponse.data, error: null };
+    return { success: true, data: apiResponse.data, error: null };
   } else {
-    return { data: null, error: apiResponse.error };
+    return { success: false, data: null, error: apiResponse.error };
   }
 }
