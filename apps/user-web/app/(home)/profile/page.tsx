@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -12,33 +12,120 @@ import {
 import { Button } from '@repo/ui/components/ui/button';
 import { Label } from '@repo/ui/components/ui/label';
 import { Input } from '@repo/ui/components/ui/input';
+import useUserStore from '@app/store/userStore';
+import { Controller, useForm } from 'react-hook-form';
+import { useUpdateUser } from '@app/hook/auth/authService';
+import PasswordChange from '@app/components/passwordChange';
+import {
+  formatPhoneNumber,
+  handlePhoneNumberChange,
+  isValidPhoneNumber,
+} from '@app/utills/phoneMask';
+
+interface UserFormData {
+  name: string;
+  email: string;
+  phone: string;
+}
+
 const ProfilePage = () => {
+  const { user } = useUserStore();
+  const { updateUser, isLoading, error } = useUpdateUser();
+  const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<UserFormData>({
+    defaultValues: {
+      name: user?.name,
+      phone: user?.phone,
+    },
+  });
+
+  const onSubmit = async (data: UserFormData) => {
+    try {
+      const result = await updateUser(data);
+      if (result.success) {
+        console.log(result.message);
+        // 성공 메시지 표시 로직 (예: 토스트 알림)
+      } else {
+        console.error(result.error);
+        // 오류 메시지 표시 로직
+      }
+    } catch (error) {
+      console.error('Error updating user info:', error);
+      // 예기치 못한 오류 처리 로직
+    }
+  };
+
   return (
     <div className="grid gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <CardTitle>나의 정보</CardTitle>
           <CardDescription>
-            View and update your personal information.
+            귀하의 개인 정보를 확인하고 저장 하세요.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-1">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" defaultValue="John Doe" />
-          </div>
-          <div className="grid gap-1">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" defaultValue="john@example.com" />
-          </div>
-          <div className="grid gap-1">
-            <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" defaultValue="+1 (555) 555-5555" />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button>Save Changes</Button>
-        </CardFooter>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="grid gap-4">
+            <div className="grid gap-1">
+              <Label htmlFor="name">이름</Label>
+              <Input
+                id="name"
+                {...register('name', { required: '이름은 필수입니다' })}
+              />
+              {errors.name && (
+                <span className="text-red-500">{errors.name.message}</span>
+              )}
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                value={user?.email || ''}
+                readOnly
+                disabled
+                className="bg-gray-100"
+              />{' '}
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="phone">전화번호</Label>
+              <Controller
+                name="phone"
+                control={control}
+                rules={{
+                  required: '전화번호는 필수입니다',
+                  validate: (value) =>
+                    isValidPhoneNumber(value) || '유효하지 않은 전화번호입니다',
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    id="phone"
+                    value={formatPhoneNumber(value)}
+                    onChange={(e) =>
+                      handlePhoneNumberChange(e.target.value, onChange)
+                    }
+                    placeholder="010-0000-0000"
+                  />
+                )}
+              />
+              {errors.phone && (
+                <span className="text-red-500">{errors.phone.message}</span>
+              )}
+            </div>
+            <PasswordChange
+              isOpen={isPasswordChangeOpen}
+              onOpenChange={setIsPasswordChangeOpen}
+            />
+          </CardContent>
+          <CardFooter>
+            <Button type="submit">회원정보 수정</Button>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
