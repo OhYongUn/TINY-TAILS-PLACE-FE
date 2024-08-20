@@ -1,21 +1,30 @@
 {
   "name": "turborepo-shadcn-ui",
-  "version": "1.3.0",
   "private": true,
   "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo build",
+    "dev:user": "turbo run dev --filter=user-web",
+    "dev:admin": "turbo run dev --filter=admin-web",
+    "dev:all": "turbo run dev",
     "dev": "turbo dev",
     "lint": "turbo lint",
+    "build:user": "turbo run build --filter=user-web",
+    "build:admin": "turbo run build --filter=admin-web",
+    "lint:user": "turbo run lint --filter=user-web",
+    "lint:admin": "turbo run lint --filter=admin-web",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ui:add": "pnpm --filter @repo/ui ui:add",
     "ui:add-v0": "pnpm --filter @repo/ui add-v0"
   },
   "devDependencies": {
+    "@repo/ui": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/js-cookie": "^3.0.6",
-    "@types/react-day-picker": "^5.3.0",
     "prettier": "^3.3.2",
     "turbo": "2.0.6"
   },
