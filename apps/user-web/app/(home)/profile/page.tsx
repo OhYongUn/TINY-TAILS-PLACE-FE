@@ -49,7 +49,12 @@ const ProfilePage = () => {
 
   const onSubmit = async (data: UserFormData) => {
     try {
-      const result = await updateUser(data);
+      const formattedData = {
+        ...data,
+        phone: data.phone ? data.phone.replace(/-/g, '') : data.phone,
+      };
+
+      const result = await updateUser(formattedData);
       if (result.success) {
         showAlert('성공', `회원정보가 수정되었습니다.`, 'success');
       } else {
