@@ -1,11 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { User } from '@app/interface/user/user';
-import {
-  fetchUserData,
-  refreshTokens,
-  verifyToken,
-} from '@app/hook/auth/authService';
+import { refreshTokens, verifyToken } from '@app/hook/auth/authService';
 
 interface UserState {
   user: User | null;
@@ -44,18 +40,14 @@ const useUserStore = create<UserState>()(
       setTokens: (accessToken: string, refreshToken: string) => {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        set({ isLoggedIn: true, isLoading: false });
       },
       initializeAuth: async () => {
         set({ isLoading: true, error: null });
         const accessToken = get().getAccessToken();
         const refreshToken = get().getRefreshToken();
-        console.log('accessToken', accessToken);
-        console.log('refreshToken', refreshToken);
         if (accessToken) {
           try {
             const isValid = await verifyToken(accessToken);
-            console.log('isValid', isValid);
             if (isValid) {
               return;
             }

@@ -3,6 +3,7 @@ import { User } from '@app/interface/user/user';
 import { apiRequest, useApiData } from '@app/interface/ApiResponse';
 import useUserStore from '@app/store/userStore';
 import { SignUpData, SignUpResponseData } from '@app/interface/auth/authTypes';
+import $axios from '@app/utills/api/axiosConfig';
 
 interface LoginData {
   email: string;
@@ -21,7 +22,7 @@ interface logoutData {
 export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const setUser = useUserStore((state) => state.setUser);
+  const { setUser, setTokens } = useUserStore();
 
   const login = async (data: LoginData) => {
     setIsLoading(true);
@@ -37,8 +38,7 @@ export function useLogin() {
 
       if (loginData) {
         const { user, accessToken, refreshToken } = loginData;
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+        setTokens(accessToken, refreshToken);
         setUser(user);
         return { success: true, user };
       } else {
@@ -127,4 +127,32 @@ export function useSignUp() {
   };
 
   return { signUp, isLoading, error };
+}
+export const verifyToken = async (token: string): Promise<boolean> => {
+  try {
+    const response = await $axios.post('/auth/verify-token', { token });
+    return response.data.data.isValid;
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return false;
+  }
+};
+
+export const refreshTokens = async (
+  refreshToken: string,
+): Promise<TokenResponse | null> => {
+  try {
+    const response = await $axios.post('/auth/refresh-token', {
+      refreshToken,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Token refresh error:', error);
+    return null;
+  }
+};
+
+interface TokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }
