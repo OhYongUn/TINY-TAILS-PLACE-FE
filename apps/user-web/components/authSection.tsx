@@ -74,16 +74,6 @@ const AuthSection = ({ setIsLoginOpen }: AuthSectionProps) => {
               <span>나의 정보</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href="/profile/reservations"
-              className="flex items-center gap-2"
-              prefetch={false}
-            >
-              <CalendarIcon className="h-4 w-4" />
-              <span>Reservation List</span>
-            </Link>
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive"

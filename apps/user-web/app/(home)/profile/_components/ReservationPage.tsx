@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -33,18 +33,24 @@ const ReservationPage = () => {
     if (user?.id) {
       fetchReservations({ page: currentPage, pageSize: 10 }, user.id);
     }
-  }, [user?.id, fetchReservations, activeTab, currentPage]);
+  }, [user?.id, fetchReservations, currentPage]);
+
+  const filteredReservations = useMemo(() => {
+    return reservations.filter(
+      (reservation) => reservation.status === activeTab,
+    );
+  }, [reservations, activeTab]);
 
   const handleTabChange = (status: BookingStatus) => {
     setActiveTab(status);
-    setCurrentPage(1); // Reset to first page when changing tabs
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading && !reservations.length) return <div>로딩 중...</div>;
   if (error) return <div>에러: {error.message}</div>;
 
   return (
@@ -57,6 +63,7 @@ const ReservationPage = () => {
         <CardContent>
           <Tabs
             defaultValue={BookingStatus.CONFIRMED}
+            value={activeTab}
             onValueChange={(value) => handleTabChange(value as BookingStatus)}
           >
             <TabsList className="grid w-full grid-cols-3">
@@ -71,13 +78,13 @@ const ReservationPage = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value={BookingStatus.CONFIRMED}>
-              <ReservationTable reservations={reservations} />
+              <ReservationTable reservations={filteredReservations} />
             </TabsContent>
             <TabsContent value={BookingStatus.COMPLETED}>
-              <ReservationTable reservations={reservations} />
+              <ReservationTable reservations={filteredReservations} />
             </TabsContent>
             <TabsContent value={BookingStatus.CANCELLED}>
-              <ReservationTable reservations={reservations} />
+              <ReservationTable reservations={filteredReservations} />
             </TabsContent>
           </Tabs>
 
