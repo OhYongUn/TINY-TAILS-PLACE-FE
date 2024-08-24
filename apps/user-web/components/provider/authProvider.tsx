@@ -1,12 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import useUserStore from '@app/store/userStore';
 import LoginModal from '@app/app/(home)/(auth)/loginModal';
 
 interface AuthContextType {
   showLoginModal: () => void;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,7 +20,6 @@ export const useAuth = () => {
   return context;
 };
 
-// 인증이 필요한 경로 목록
 const protectedRoutes = [
   '/profile',
   '/profile/pets',
@@ -34,22 +34,28 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const { user, isLoggedIn, clearUser } = useUserStore();
+  const { user, isLoggedIn, getAccessToken, initializeAuth } = useUserStore();
+  const [isLoginOpen, setIsLoginOpen] = React.useState(false);
 
   const showLoginModal = () => {
     setIsLoginOpen(true);
   };
 
   useEffect(() => {
-    if (!isLoggedIn && protectedRoutes.includes(pathname)) {
-      router.push('/'); // 메인 페이지로 리다이렉트
-      showLoginModal(); // 로그인 모달 표시
-    }
-  }, [isLoggedIn, pathname, router]);
+    const checkAuth = () => {
+      if (!user && protectedRoutes.includes(pathname)) {
+        router.push('/');
+        showLoginModal();
+      }
+    };
+
+    checkAuth();
+  }, [pathname, router]);
 
   return (
-    <AuthContext.Provider value={{ showLoginModal }}>
+    <AuthContext.Provider
+      value={{ showLoginModal, isAuthenticated: isLoggedIn }}
+    >
       {children}
       <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
     </AuthContext.Provider>
