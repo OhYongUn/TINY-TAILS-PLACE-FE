@@ -9,19 +9,17 @@ import { Input } from '@repo/ui/components/ui/input';
 import { PawPrintIcon } from '@repo/ui/components/ui/icons';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@app/store/auth-store';
+import { useAuth } from '@app/hooks/auth-services';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setAdmin } = useAuthStore();
   const router = useRouter();
-
+  const { loginUser, loading, error } = useAuth();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically make an API call to validate credentials
-    // For this example, we'll just simulate a successful login
-    setAdmin({ id: '1', email, name: 'User Name', role: 'user' });
-    router.push('/');
+    await loginUser(email, password);
   };
 
   return (
@@ -51,17 +49,17 @@ export default function Login() {
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
-                <Label htmlFor="email-address" className="sr-only">
-                  Email address
+                <Label htmlFor="email" className="sr-only">
+                  Emails
                 </Label>
                 <Input
-                  id="email-address"
+                  id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
                   className="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-2 text-foreground placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
-                  placeholder="Email address"
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
