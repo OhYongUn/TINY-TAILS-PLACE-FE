@@ -6,20 +6,7 @@ import { MonthSelector } from '@app/components/MonthSelector';
 import { ReservationTable } from '@app/components/ReservationTable';
 import { StatusLegend } from '@app/components/StatusLegend';
 import { getRoomStatus } from '@app/actions/reservations/reservations-api';
-
-export type RoomStatus = 'CONFIRMED' | 'CHECKED_IN' | 'CHECKED_OUT' | string;
-
-export interface RoomStatusDto {
-  date: string;
-  status: RoomStatus;
-}
-
-export interface Room {
-  id: number;
-  roomNumber: string;
-  name: string;
-  status: RoomStatusDto[];
-}
+import { Room } from '@app/types/reservation/type';
 
 export default function ReservationStatus() {
   const [currentDate, setCurrentDate] = useState(() => new Date());

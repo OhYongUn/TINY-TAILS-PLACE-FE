@@ -1,35 +1,13 @@
 'use server';
 import api from '@app/utils/api';
-
-interface RoomStatusDto {
-  date: string;
-  status: string;
-}
-
-interface Room {
-  id: number;
-  roomNumber: string;
-  name: string;
-  status: RoomStatusDto[];
-}
-
-export interface RoomStatusResponseDto {
-  success: boolean;
-  statusCode: number;
-  data: {
-    year: number;
-    month: number;
-    rooms: Room[];
-  };
-  error: string | null;
-}
+import { ReservationsResponseDto } from '@app/types/reservation/type';
 
 export async function getRoomStatus(
   year: number,
   month: number,
-): Promise<RoomStatusResponseDto> {
+): Promise<ReservationsResponseDto> {
   try {
-    const response = await api.get<RoomStatusResponseDto>(
+    const response = await api.get<ReservationsResponseDto>(
       `admin-bookings/reservation-status?year=${year}&month=${month}`,
     );
 
