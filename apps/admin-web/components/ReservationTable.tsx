@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { format, getDaysInMonth } from 'date-fns';
 import { RoomRow } from './RoomRow';
 import { Dialog } from '@repo/ui/components/ui/dialog';
-import { ReservationDetail } from './ReservationDetail';
 import {
   Room,
   ReservationDetailDto,
   ReservationDetailResponseDto,
 } from '@app/types/reservation/type';
 import { getReservationDetail } from '@app/actions/reservations/reservations-service';
+import ReservationDetail from '@app/components/ReservationDetail';
 
 interface ReservationTableProps {
   currentDate: Date;
