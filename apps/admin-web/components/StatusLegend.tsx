@@ -1,10 +1,10 @@
+// StatusLegend.tsx
 import React from 'react';
 
 const statusColors = {
-  available: 'bg-green-200',
-  booked: 'bg-red-200',
-  cleaning: 'bg-yellow-200',
-  maintenance: 'bg-gray-200',
+  '예약 확정': 'bg-green-200',
+  '입실 완료': 'bg-red-200',
+  '퇴실 완료': 'bg-yellow-200',
 };
 
 export function StatusLegend() {

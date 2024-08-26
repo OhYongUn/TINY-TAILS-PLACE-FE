@@ -1,96 +1,67 @@
-'use cleint';
-import React, { useState } from 'react';
-import {
-  format,
-  getDaysInMonth,
-  startOfMonth,
-  addMonths,
-  subMonths,
-} from 'date-fns';
+// ReservationStatus.tsx
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { MonthSelector } from '@app/components/MonthSelector';
 import { ReservationTable } from '@app/components/ReservationTable';
 import { StatusLegend } from '@app/components/StatusLegend';
+import { getRoomStatus } from '@app/actions/reservations/reservations-api';
 
-// 방 상태에 따른 색상 정의
-const statusColors = {
-  available: 'bg-green-200',
-  booked: 'bg-red-200',
-  cleaning: 'bg-yellow-200',
-  maintenance: 'bg-gray-200',
-};
+export type RoomStatus = 'CONFIRMED' | 'CHECKED_IN' | 'CHECKED_OUT' | string;
 
-type RoomStatus = keyof typeof statusColors;
-
-interface Room {
-  number: string;
-  status: RoomStatus[];
+export interface RoomStatusDto {
+  date: string;
+  status: RoomStatus;
 }
 
-// 샘플 데이터 (실제 사용 시 API에서 가져오거나 데이터베이스에서 조회해야 함)
-const rooms: Room[] = [
-  { number: '101', status: Array(31).fill('available') as RoomStatus[] },
-  { number: '102', status: Array(31).fill('available') as RoomStatus[] },
-  { number: '103', status: Array(31).fill('available') as RoomStatus[] },
-  { number: '201', status: Array(31).fill('available') as RoomStatus[] },
-  { number: '202', status: Array(31).fill('available') as RoomStatus[] },
-];
-
-// 샘플 예약 데이터 (실제 사용 시 API에서 가져와야 함)
-const bookings = [
-  { room: '101', startDay: 5, endDay: 10 },
-  { room: '102', startDay: 1, endDay: 3 },
-  { room: '103', startDay: 15, endDay: 20 },
-  { room: '201', startDay: 7, endDay: 12 },
-  { room: '202', startDay: 22, endDay: 25 },
-];
+export interface Room {
+  id: number;
+  roomNumber: string;
+  name: string;
+  status: RoomStatusDto[];
+}
 
 export default function ReservationStatus() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const daysInMonth = getDaysInMonth(currentDate);
-  const firstDayOfMonth = startOfMonth(currentDate);
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [error, setError] = useState<string | null>(null);
+  const [reservations, setReservations] = useState<Room[] | null>(null);
 
-  const goToPreviousMonth = () => {
-    setCurrentDate((prevDate) => subMonths(prevDate, 1));
-  };
-
-  const goToNextMonth = () => {
-    setCurrentDate((prevDate) => addMonths(prevDate, 1));
-  };
-
-  // 예약 데이터를 rooms 배열에 적용
-  const updateRoomStatus = () => {
-    const updatedRooms = rooms.map((room) => ({
-      ...room,
-      status: Array(daysInMonth).fill('available') as RoomStatus[],
-    }));
-
-    bookings.forEach((booking) => {
-      const roomIndex = updatedRooms.findIndex(
-        (room) => room.number === booking.room,
-      );
-      if (roomIndex !== -1) {
-        for (let i = booking.startDay - 1; i < booking.endDay; i++) {
-          if (i < daysInMonth) {
-            // @ts-ignore
-            updatedRooms[roomIndex].status[i] = 'booked';
-          }
-        }
+  const fetchRoomStatus = useCallback(async (date: Date) => {
+    setError(null);
+    try {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const result = await getRoomStatus(year, month);
+      if (result.success) {
+        setReservations(result.data.rooms as Room[]);
+      } else {
+        setError(result.error || 'Failed to fetch room status');
       }
-    });
+    } catch (err) {
+      setError('An unexpected error occurred');
+    } finally {
+    }
+  }, []);
 
-    return updatedRooms;
-  };
+  useEffect(() => {
+    fetchRoomStatus(currentDate);
+  }, [currentDate, fetchRoomStatus]);
 
-  const updatedRooms = updateRoomStatus();
+  const handleDateChange = useCallback((newDate: Date) => {
+    setCurrentDate(newDate);
+  }, []);
+
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="p-4 bg-white">
-      <h1 className="text-2xl font-bold mb-4">예약 현황</h1>
       <MonthSelector
         currentDate={currentDate}
-        setCurrentDate={setCurrentDate}
+        onDateChange={handleDateChange}
       />
-      <ReservationTable currentDate={currentDate} rooms={rooms} />
+      {reservations && (
+        <ReservationTable currentDate={currentDate} rooms={reservations} />
+      )}
       <StatusLegend />
     </div>
   );

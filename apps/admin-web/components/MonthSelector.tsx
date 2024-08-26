@@ -1,4 +1,5 @@
-import React from 'react';
+// MonthSelector.tsx
+import React, { useCallback } from 'react';
 import { format, addMonths, subMonths } from 'date-fns';
 import {
   Calendar as CalendarIcon,
@@ -15,21 +16,27 @@ import { MonthCalendar } from './MonthCalendar';
 
 interface MonthSelectorProps {
   currentDate: Date;
-  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  onDateChange: (newDate: Date) => void;
 }
 
 export function MonthSelector({
   currentDate,
-  setCurrentDate,
+  onDateChange,
 }: MonthSelectorProps) {
-  const goToPreviousMonth = () =>
-    setCurrentDate((prevDate) => subMonths(prevDate, 1));
-  const goToNextMonth = () =>
-    setCurrentDate((prevDate) => addMonths(prevDate, 1));
+  const goToPreviousMonth = useCallback(() => {
+    onDateChange(subMonths(currentDate, 1));
+  }, [currentDate, onDateChange]);
 
-  const handleMonthChange = (newDate: Date) => {
-    setCurrentDate(newDate);
-  };
+  const goToNextMonth = useCallback(() => {
+    onDateChange(addMonths(currentDate, 1));
+  }, [currentDate, onDateChange]);
+
+  const handleMonthChange = useCallback(
+    (newDate: Date) => {
+      onDateChange(newDate);
+    },
+    [onDateChange],
+  );
 
   return (
     <div className="flex items-center justify-between mb-4">

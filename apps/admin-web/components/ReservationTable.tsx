@@ -1,13 +1,8 @@
+// ReservationTable.tsx
 import React from 'react';
 import { format, getDaysInMonth } from 'date-fns';
 import { RoomRow } from '@app/components/RoomRow';
-
-interface Room {
-  number: string;
-  status: RoomStatus[];
-}
-
-type RoomStatus = 'available' | 'booked' | 'cleaning' | 'maintenance';
+import { Room } from './ReservationStatus';
 
 interface ReservationTableProps {
   currentDate: Date;
@@ -42,7 +37,11 @@ export function ReservationTable({
         </thead>
         <tbody>
           {rooms.map((room) => (
-            <RoomRow key={room.number} room={room} currentDate={currentDate} />
+            <RoomRow
+              key={room.roomNumber}
+              room={room}
+              currentDate={currentDate}
+            />
           ))}
         </tbody>
       </table>
