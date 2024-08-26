@@ -19,7 +19,7 @@ export default function MainLayout({
         setSidebarCollapsed={setSidebarCollapsed}
       />
       <div
-        className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'}`}
+        className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-56'}`}
       >
         <Header
           setSidebarOpen={setSidebarOpen}
