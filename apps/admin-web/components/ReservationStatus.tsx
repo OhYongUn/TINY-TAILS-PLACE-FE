@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MonthSelector } from '@app/components/MonthSelector';
 import { ReservationTable } from '@app/components/ReservationTable';
 import { StatusLegend } from '@app/components/StatusLegend';
-import { getRoomStatus } from '@app/actions/reservations/reservations-api';
+import { getRoomStatus } from '@app/actions/reservations/reservations-service';
 import { Room } from '@app/types/reservation/type';
 
 export default function ReservationStatus() {
