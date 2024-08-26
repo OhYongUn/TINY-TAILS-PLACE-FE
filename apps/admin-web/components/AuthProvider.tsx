@@ -35,11 +35,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     if (!isAuthenticated && !publicRoutes.includes(pathname)) {
+      // 인증되지 않은 사용자가 비공개 경로에 접근하려 할 때만 리다이렉트
       router.push('/login');
-    } else if (isAuthenticated) {
+    } else if (isAuthenticated && publicRoutes.includes(pathname)) {
+      // 인증된 사용자가 공개 경로(예: 로그인 페이지)에 접근하려 할 때 홈으로 리다이렉트
       router.push('/');
     }
-    /*else if (isAuthenticated) {
+    // 역할 기반 접근 제어는 주석 처리된 상태로 유지
+    /*
+    else if (isAuthenticated) {
       const userRoles = Object.keys(roles);
       const allowedRoutes = userRoles.flatMap(
         (role) => roleBasedRoutes[role] || [],
@@ -50,9 +54,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       ) {
         router.push('/'); // Default route after login
       }
-    }*/
-    /* }, [isAuthenticated, user, roles, router, pathname]);*/
-  }, [isAuthenticated, user, router, pathname]);
+    }
+    */
+  }, [isAuthenticated, user, roles, router, pathname]);
 
   return <>{children}</>;
 }
