@@ -3,7 +3,12 @@ import { format, getDaysInMonth } from 'date-fns';
 import { RoomRow } from './RoomRow';
 import { Dialog } from '@repo/ui/components/ui/dialog';
 import { ReservationDetail } from './ReservationDetail';
-import { Room } from '@app/types/reservation/type';
+import {
+  Room,
+  ReservationDetailDto,
+  ReservationDetailResponseDto,
+} from '@app/types/reservation/type';
+import { getReservationDetail } from '@app/actions/reservations/reservations-service';
 
 interface ReservationTableProps {
   currentDate: Date;
@@ -15,15 +20,12 @@ export function ReservationTable({
   rooms,
 }: ReservationTableProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<{
-    roomNumber: string;
-    date: string;
-    bookingId: string | null;
-  } | null>(null);
+  const [selectedBooking, setSelectedBooking] =
+    useState<ReservationDetailDto | null>(null);
 
   const daysInMonth = getDaysInMonth(currentDate);
 
-  const handleCellDoubleClick = (
+  const handleCellDoubleClick = async (
     roomNumber: string,
     date: string,
     bookingId: string | null,
@@ -31,8 +33,18 @@ export function ReservationTable({
     if (!bookingId) {
       return;
     }
-    setSelectedBooking({ roomNumber, date, bookingId });
-    setIsDialogOpen(true);
+    try {
+      const response: ReservationDetailResponseDto =
+        await getReservationDetail(bookingId);
+      if (response.success && response.data) {
+        setSelectedBooking(response.data);
+        setIsDialogOpen(true);
+      } else {
+        console.error('Failed to fetch reservation detail:', response.error);
+      }
+    } catch (error) {
+      console.error('Error fetching reservation detail:', error);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -75,9 +87,7 @@ export function ReservationTable({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {selectedBooking && (
           <ReservationDetail
-            roomNumber={selectedBooking.roomNumber}
-            date={selectedBooking.date}
-            bookingId={selectedBooking.bookingId}
+            reservationDetail={selectedBooking}
             onClose={handleCloseDialog}
           />
         )}
