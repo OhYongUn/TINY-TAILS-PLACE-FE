@@ -13,6 +13,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@repo/ui/components/ui/collapsible';
+import { useState } from 'react';
 
 const menuItems = [
   {
@@ -24,22 +25,72 @@ const menuItems = [
       { name: '예약 취소', icon: Calendar },
     ],
   },
-  // ... (other menu items)
+  {
+    name: '사용자 관리',
+    icon: Users,
+    submenu: [
+      { name: '고객 목록', icon: Users },
+      { name: '고객 정보 수정', icon: UserCog },
+    ],
+  },
+  {
+    name: '관리자 관리',
+    icon: UserCog,
+    submenu: [
+      { name: '관리자 목록', icon: Users },
+      { name: '권한 설정', icon: UserCog },
+    ],
+  },
+  {
+    name: '상품 관리',
+    icon: Building,
+    submenu: [
+      { name: '객실 목록', icon: Building },
+      { name: '객실 타입 관리', icon: Building },
+      { name: '요금 설정', icon: ShoppingCart },
+    ],
+  },
+  {
+    name: '주문 관리',
+    icon: ShoppingCart,
+    submenu: [
+      { name: '결제 내역', icon: ShoppingCart },
+      { name: '환불 처리', icon: ShoppingCart },
+    ],
+  },
 ];
 
-export default function SidebarMenu() {
+export default function SidebarMenu({ collapsed }: { collapsed: boolean }) {
+  const [openItems, setOpenItems] = useState<string[]>([]);
+
+  const toggleItem = (itemName: string) => {
+    setOpenItems((prev) =>
+      prev.includes(itemName)
+        ? prev.filter((item) => item !== itemName)
+        : [...prev, itemName],
+    );
+  };
+
   return (
     <nav className="flex-1 space-y-1 px-2 py-4 overflow-y-auto">
       {menuItems.map((item) => (
-        <Collapsible key={item.name}>
+        <Collapsible
+          key={item.name}
+          open={openItems.includes(item.name)}
+          onOpenChange={() => !collapsed && toggleItem(item.name)}
+        >
           <CollapsibleTrigger className="flex w-full items-center rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-200">
             <item.icon className="h-6 w-6 mr-3" />
-            {item.name}
-            {item.submenu.length > 0 && (
-              <ChevronDown className="h-4 w-4 ml-auto" />
+            {!collapsed && (
+              <>
+                {item.name}
+                {item.submenu.length > 0 && (
+                  <ChevronDown className="h-4 w-4 ml-auto" />
+                )}
+              </>
             )}
           </CollapsibleTrigger>
-          {item.submenu.length > 0 && (
+          {!collapsed && item.submenu.length > 0 && (
             <CollapsibleContent className="ml-6 mt-1 space-y-1">
               {item.submenu.map((subItem) => (
                 <a

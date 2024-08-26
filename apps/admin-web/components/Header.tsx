@@ -1,10 +1,12 @@
-'user client';
+'use client';
 import {
   Menu,
   Bell,
   Mail,
   LogOut,
   Settings,
+  ChevronLeft,
+  ChevronRight,
 } from '@repo/ui/components/ui/lucide-react';
 import { Button } from '@repo/ui/components/ui/button';
 import { logout } from '@app/actions/auth/auth';
@@ -13,29 +15,34 @@ import { useAuthStore } from '@app/store/auth-store';
 
 export default function Header({
   setSidebarOpen,
+  sidebarCollapsed,
 }: {
   setSidebarOpen: (open: boolean) => void;
+  sidebarCollapsed: boolean;
 }) {
   const router = useRouter();
   const { clearAuth } = useAuthStore();
   const handleLogOut = async () => {
     console.log('logout');
     await logout();
-    router.push('/login'); // 로그아�� 성공 후 리다이��트
+    router.push('/login'); // 로그아웃 성공 후 리다이렉트
     clearAuth();
   };
   return (
-    <header className="fixed top-0 right-0 left-0 z-20 flex h-16 items-center justify-between border-b bg-white px-4 lg:left-64">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <Menu className="h-6 w-6" />
-        <span className="sr-only">사이드바 열기</span>
-      </Button>
-      <div className="flex-1" />
+    <header
+      className={`fixed top-0 right-0 left-0 z-20 flex h-16 items-center justify-between border-b bg-white px-4 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'lg:left-20' : 'lg:left-56'}`}
+    >
+      <div className="flex items-center">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">사이드바 열기</span>
+        </Button>
+      </div>
       <div className="flex items-center space-x-4">
         <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
