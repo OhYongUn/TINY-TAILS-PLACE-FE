@@ -7,18 +7,9 @@ import {
   addMonths,
   subMonths,
 } from 'date-fns';
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-} from '@repo/ui/components/ui/lucide-react';
-import { Button } from '@repo/ui/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@repo/ui/components/ui/popover';
-import { Calendar } from '@repo/ui/components/ui/calendar';
+import { MonthSelector } from '@app/components/MonthSelector';
+import { ReservationTable } from '@app/components/ReservationTable';
+import { StatusLegend } from '@app/components/StatusLegend';
 
 // 방 상태에 따른 색상 정의
 const statusColors = {
@@ -80,6 +71,7 @@ export default function ReservationStatus() {
       if (roomIndex !== -1) {
         for (let i = booking.startDay - 1; i < booking.endDay; i++) {
           if (i < daysInMonth) {
+            // @ts-ignore
             updatedRooms[roomIndex].status[i] = 'booked';
           }
         }
@@ -94,86 +86,12 @@ export default function ReservationStatus() {
   return (
     <div className="p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4">예약 현황</h1>
-      <div className="flex items-center justify-between mb-4">
-        <Button onClick={goToPreviousMonth} variant="outline" size="icon">
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline">
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {format(currentDate, 'yyyy년 MM월')}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={currentDate}
-              onSelect={(date) => date && setCurrentDate(date)}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-        <Button onClick={goToNextMonth} variant="outline" size="icon">
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border p-2">객실</th>
-              {Array.from({ length: daysInMonth }, (_, i) => (
-                <th key={i} className="border p-2 text-sm">
-                  {format(
-                    new Date(
-                      currentDate.getFullYear(),
-                      currentDate.getMonth(),
-                      i + 1,
-                    ),
-                    'd',
-                  )}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {updatedRooms.map((room) => (
-              <tr key={room.number}>
-                <td className="border p-2 font-semibold">{room.number}</td>
-                {room.status.map((status, day) => (
-                  <td
-                    key={day}
-                    className={`border p-2 ${statusColors[status]}`}
-                    title={`${room.number}호 ${format(new Date(currentDate.getFullYear(), currentDate.getMonth(), day + 1), 'yyyy-MM-dd')} : ${status}`}
-                  >
-                    <span className="sr-only">
-                      {room.number}호{' '}
-                      {format(
-                        new Date(
-                          currentDate.getFullYear(),
-                          currentDate.getMonth(),
-                          day + 1,
-                        ),
-                        'yyyy-MM-dd',
-                      )}{' '}
-                      : {status}
-                    </span>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-4 flex space-x-4">
-        {Object.entries(statusColors).map(([status, color]) => (
-          <div key={status} className="flex items-center">
-            <div className={`w-4 h-4 ${color} mr-2`}></div>
-            <span className="text-sm">{status}</span>
-          </div>
-        ))}
-      </div>
+      <MonthSelector
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
+      />
+      <ReservationTable currentDate={currentDate} rooms={rooms} />
+      <StatusLegend />
     </div>
   );
 }
