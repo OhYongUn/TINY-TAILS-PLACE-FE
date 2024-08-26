@@ -2,25 +2,29 @@
 
 import { Button } from '@repo/ui/components/ui/button';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import { Label } from '@repo/ui/components/ui/label';
 import { Checkbox } from '@repo/ui/components/ui/checkbox';
 import { Input } from '@repo/ui/components/ui/input';
 import { PawPrintIcon } from '@repo/ui/components/ui/icons';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@app/store/auth-store';
-import { useAuth } from '@app/hooks/auth-services';
+import { login } from '@app/actions/auth/auth';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { setAdmin } = useAuthStore();
   const router = useRouter();
-  const { loginUser, loading, error } = useAuth();
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await loginUser(email, password);
-  };
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  async function handleSubmit(formData: FormData) {
+    const result = await login(formData);
+    if (result.success) {
+      setAuth(result.user, result.roles);
+      router.push('/'); // 로그인 성공 후 리다이렉트
+    } else {
+      // 에러 처리
+      console.error(result.error);
+    }
+  }
 
   return (
     <>
@@ -45,12 +49,12 @@ export default function Login() {
               냐옹냐옹!? 멍멍!?
             </h6>
           </div>
-          <form className="mt-8 space-y-8" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-8" action={handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
                 <Label htmlFor="email" className="sr-only">
-                  Emails
+                  Email
                 </Label>
                 <Input
                   id="email"
@@ -60,8 +64,6 @@ export default function Login() {
                   required
                   className="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-2 text-foreground placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
                   placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
@@ -76,8 +78,6 @@ export default function Login() {
                   required
                   className="relative block w-full appearance-none rounded-b-md border border-gray-300 px-3 py-2 text-foreground placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>

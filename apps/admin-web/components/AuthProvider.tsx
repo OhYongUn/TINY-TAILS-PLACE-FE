@@ -1,7 +1,9 @@
 'use client';
+
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@app/store/auth-store';
+import { getCurrentUser } from '@app/actions/auth/auth';
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -15,25 +17,42 @@ const roleBasedRoutes: Record<string, string[]> = {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
+  const pathname = usePathname();
+  const { isAuthenticated, user, roles, setAuth, clearAuth } = useAuthStore();
 
   useEffect(() => {
-    const currentPath = window.location.pathname;
-
-    if (!isAuthenticated && !publicRoutes.includes(currentPath)) {
-      router.push('/login');
-    }
-
-    if (isAuthenticated && user) {
-      const allowedRoutes = roleBasedRoutes[user.role] || [];
-      if (
-        !allowedRoutes.some((route) => currentPath.startsWith(route)) &&
-        !publicRoutes.includes(currentPath)
-      ) {
-        router.push('/dashboard');
+    const checkAuth = async () => {
+      const result = await getCurrentUser();
+      if (result) {
+        setAuth(result.user, result.roles);
+      } else {
+        clearAuth();
       }
+    };
+
+    checkAuth();
+  }, [setAuth, clearAuth]);
+
+  useEffect(() => {
+    if (!isAuthenticated && !publicRoutes.includes(pathname)) {
+      router.push('/login');
+    } else if (isAuthenticated) {
+      router.push('/');
     }
-  }, [isAuthenticated, user, router]);
+    /*else if (isAuthenticated) {
+      const userRoles = Object.keys(roles);
+      const allowedRoutes = userRoles.flatMap(
+        (role) => roleBasedRoutes[role] || [],
+      );
+      if (
+        !allowedRoutes.some((route) => pathname.startsWith(route)) &&
+        !publicRoutes.includes(pathname)
+      ) {
+        router.push('/'); // Default route after login
+      }
+    }*/
+    /* }, [isAuthenticated, user, roles, router, pathname]);*/
+  }, [isAuthenticated, user, router, pathname]);
 
   return <>{children}</>;
 }

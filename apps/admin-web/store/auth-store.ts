@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 type User = {
@@ -8,53 +8,30 @@ type User = {
   phone: string;
 };
 
+type Roles = Record<string, any>;
+
 type AuthStore = {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
+  roles: Roles;
   isAuthenticated: boolean;
-  setAdmin: (user: User, accessToken: string, refreshToken: string) => void;
-  clearAdmin: () => void;
-};
-
-const saveTokensToLocalStorage = (
-  accessToken: string,
-  refreshToken: string,
-) => {
-  localStorage.setItem('accessToken', accessToken);
-  localStorage.setItem('refreshToken', refreshToken);
-};
-
-const removeTokensFromLocalStorage = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
+  setAuth: (user: User, roles: Roles) => void;
+  clearAuth: () => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
       user: null,
-      accessToken: null,
-      refreshToken: null,
+      roles: {},
       isAuthenticated: false,
-      setAdmin: (user, accessToken, refreshToken) => {
-        saveTokensToLocalStorage(accessToken, refreshToken);
-        set({ user, accessToken, refreshToken, isAuthenticated: true });
-      },
-      clearAdmin: () => {
-        removeTokensFromLocalStorage();
-        set({
-          user: null,
-          accessToken: null,
-          refreshToken: null,
-          isAuthenticated: false,
-        });
-      },
+      setAuth: (user, roles) => set({ user, roles, isAuthenticated: true }),
+      clearAuth: () => set({ user: null, roles: {}, isAuthenticated: false }),
     }),
     {
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
+        roles: state.roles,
         isAuthenticated: state.isAuthenticated,
       }),
     },

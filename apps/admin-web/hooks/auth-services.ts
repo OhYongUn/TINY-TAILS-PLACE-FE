@@ -1,3 +1,4 @@
+/*
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@app/store/auth-store';
@@ -51,3 +52,6 @@ export const useAuth = () => {
 
   return { loginUser, logoutUser, loading, error };
 };
+
+
+*/
