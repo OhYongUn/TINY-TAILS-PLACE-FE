@@ -1,5 +1,22 @@
-export type RoomStatus = 'CONFIRMED' | 'CHECKED_IN' | 'CHECKED_OUT' | string;
+export const paymentStatusMap: Record<string, string> = {
+  PENDING: '결제 대기',
+  COMPLETED: '결제 완료',
+  FAILED: '결제 실패',
+  REFUNDED: '환불 완료',
+};
 
+export const paymentMethodMap: Record<string, string> = {
+  CREDIT_CARD: '신용 카드',
+  BANK_TRANSFER: '계좌 이체',
+  CASH: '현금 결제',
+};
+export const BookingStatusMap: Record<string, string> = {
+  PENDING: 'PENDING',
+  CONFIRMED: '예약 확정',
+  CHECKED_IN: '입실 완료',
+  CHECKED_OUT: '퇴실 완료',
+  CANCELLED: '취소 완료',
+};
 export interface RoomStatusDto {
   date: string;
   status: string;
@@ -26,23 +43,23 @@ export interface ReservationsResponseDto {
 
 export enum BookingStatus {
   PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  CHECKED_IN = 'CHECKED_IN',
-  CHECKED_OUT = 'CHECKED_OUT',
-  CANCELLED = 'CANCELLED',
+  CONFIRMED = '예약 확정',
+  CHECKED_IN = '입실 완료',
+  CHECKED_OUT = '퇴실 완료',
+  CANCELLED = '취소 완료',
 }
 
 export enum PaymentStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  REFUNDED = 'REFUNDED',
+  PENDING = '결제 대기',
+  COMPLETED = '결제 완료',
+  FAILED = '결제 실패',
+  REFUNDED = '환불 완료',
 }
 
 export enum PaymentMethod {
-  CREDIT_CARD = 'CREDIT_CARD',
-  BANK_TRANSFER = 'BANK_TRANSFER',
-  CASH = 'CASH',
+  CREDIT_CARD = '신용 카드',
+  BANK_TRANSFER = '계좌 이체',
+  CASH = '현금 결제',
 }
 
 export enum PaymentType {
@@ -63,6 +80,7 @@ export interface UserDto {
   id: number;
   name: string;
   email: string;
+  phone: string;
 }
 
 export interface BookingDetailsDto {
@@ -115,6 +133,7 @@ export interface ReservationDetailDto {
     id: number;
     name: string;
     email: string;
+    phone: string;
   };
   bookingDetails: {
     petCount: number;
