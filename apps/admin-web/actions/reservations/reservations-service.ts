@@ -50,23 +50,38 @@ export async function getReservationDetail(
   }
 }
 export async function fetchReservations(params: {
-  date?: string;
+  fromDate?: string;
+  toDate?: string;
   searchOption?: string;
   searchQuery?: string;
   sortOption?: string;
   page: number;
+  pageSize: number;
+  status?: string;
 }) {
   const queryParams = new URLSearchParams({
-    ...(params.date && { date: params.date }),
+    ...(params.fromDate && { fromDate: params.fromDate }),
+    ...(params.toDate && { toDate: params.toDate }),
     ...(params.searchOption && { searchOption: params.searchOption }),
     ...(params.searchQuery && { searchQuery: params.searchQuery }),
     ...(params.sortOption && { sortOption: params.sortOption }),
     page: params.page.toString(),
+    pageSize: params.pageSize.toString(),
   });
-
-  const response = await fetch(`/api/reservations?${queryParams}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch reservations');
+  if (params.status) {
+    queryParams.set('status', params.status);
   }
-  return response.json();
+  console.log('queryParams', queryParams);
+  try {
+    const response = await api.get<any>(`admin-bookings?${queryParams}`);
+
+    if (response.data.success) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.error || 'Failed to fetch reservations');
+    }
+  } catch (err: any) {
+    console.error('Error fetching reservations:', err);
+    throw new Error(err.message || 'An unexpected error occurred');
+  }
 }

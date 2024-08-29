@@ -1,4 +1,3 @@
-// DateRangePicker.tsx
 import React from 'react';
 import {
   Popover,
@@ -9,6 +8,7 @@ import { Button } from '@repo/ui/components/ui/button';
 import { Calendar } from '@repo/ui/components/ui/calendar';
 import { CalendarDaysIcon } from '@repo/ui/components/ui/icons';
 import { DateRange } from 'react-day-picker';
+import { format } from 'date-fns';
 
 interface DateRangePickerProps {
   dateRange: DateRange | undefined;
@@ -32,8 +32,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <Button variant="outline" className="w-full">
             <CalendarDaysIcon className="mr-2" />
             {dateRange?.from
-              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to?.toLocaleDateString() || ''}`
-              : ''}
+              ? `${format(dateRange.from, 'yyyy-MM-dd')} - ${dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : 'Select end date'}`
+              : 'Select Dates'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0">

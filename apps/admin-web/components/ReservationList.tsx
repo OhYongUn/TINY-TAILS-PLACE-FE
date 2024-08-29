@@ -6,15 +6,16 @@ import { DateRange } from 'react-day-picker';
 import ReservationListSearchFilters from './ReservationListSearchFilters';
 import ReservationListTable from './ReservationListTable';
 import ReservationListPagination from './ReservationListPagination';
-
-// 가짜 데이터 생성 함수와 fetchReservations 함수는 그대로 유지
+import { fetchReservations } from '@app/actions/reservations/reservations-service';
+import { format } from 'date-fns';
+import { LoadingOverlay } from './LoadingOverlay';
 
 export default function ReservationList() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   const from = searchParams.get('from');
   const to = searchParams.get('to');
@@ -22,31 +23,61 @@ export default function ReservationList() {
   const searchQuery = searchParams.get('searchQuery');
   const sortOption = searchParams.get('sortOption');
   const page = searchParams.get('page');
+  const pageSize = searchParams.get('pageSize');
+  const status = searchParams.get('status');
 
-  const dateRange: DateRange | undefined =
-    from && to ? { from: new Date(from), to: new Date(to) } : undefined;
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+    if (from && to) {
+      return {
+        from: new Date(from),
+        to: new Date(to),
+      };
+    }
+    const now = new Date();
+    return {
+      from: new Date(now.getFullYear(), now.getMonth(), 1),
+      to: new Date(now.getFullYear(), now.getMonth() + 1, 0),
+    };
+  });
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchData = async () => {
-      setLoading(true);
       try {
         const data = await fetchReservations({
-          dateRange,
+          fromDate: dateRange?.from
+            ? format(dateRange.from, 'yyyy-MM-dd')
+            : undefined,
+          toDate: dateRange?.to
+            ? format(dateRange.to, 'yyyy-MM-dd')
+            : undefined,
           searchOption: searchOption || undefined,
           searchQuery: searchQuery || undefined,
-          sortOption: sortOption || undefined,
+          sortOption: sortOption || 'createdAt_desc',
           page: page ? parseInt(page) : 1,
+          pageSize: pageSize ? parseInt(pageSize) : 10,
+          status: status ? status : undefined,
         });
-        setReservations(data.reservations);
+        setReservations(data.bookings);
         setTotalPages(data.totalPages);
       } catch (error) {
         console.error('Failed to fetch reservations:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchData();
-  }, [from, to, searchOption, searchQuery, sortOption, page]);
+  }, [
+    dateRange,
+    searchOption,
+    searchQuery,
+    sortOption,
+    status,
+    page,
+    pageSize,
+  ]);
 
   const updateFilters = (newFilters: any) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -54,14 +85,14 @@ export default function ReservationList() {
       if (value === undefined) {
         params.delete(key);
       } else if (key === 'dateRange') {
-        params.set(
-          'from',
-          (value as DateRange).from?.toISOString().split('T')[0] || '',
-        );
-        params.set(
-          'to',
-          (value as DateRange).to?.toISOString().split('T')[0] || '',
-        );
+        const range = value as DateRange;
+        if (range.from) params.set('from', format(range.from, 'yyyy-MM-dd'));
+        if (range.to) params.set('to', format(range.to, 'yyyy-MM-dd'));
+        setDateRange(range);
+      } else if (key === 'pageSize') {
+        params.set(key, value as string);
+      } else if (key === 'status') {
+        params.set(key, value as string);
       } else {
         params.set(key, value as string);
       }
@@ -71,19 +102,27 @@ export default function ReservationList() {
   };
 
   return (
-    <div className="p-4 bg-white container mx-auto py-10">
-      <ReservationListSearchFilters
-        dateRange={dateRange}
-        searchOption={searchOption || ''}
-        searchQuery={searchQuery || ''}
-        sortOption={sortOption || ''}
-        onUpdateFilters={updateFilters}
-      />
-      <ReservationListTable reservations={reservations} loading={loading} />
-      <ReservationListPagination
-        currentPage={page ? parseInt(page) : 1}
-        totalPages={totalPages}
-      />
-    </div>
+    <>
+      {loading && <LoadingOverlay />}
+      <div className="p-4 bg-white container mx-auto py-10">
+        <ReservationListSearchFilters
+          dateRange={dateRange}
+          searchOption={searchOption || ''}
+          searchQuery={searchQuery || ''}
+          sortOption={sortOption || ''}
+          status={status}
+          pageSize={pageSize}
+          onUpdateFilters={updateFilters}
+        />
+        <ReservationListTable reservations={reservations} />
+        <ReservationListPagination
+          currentPage={page ? parseInt(page) : 1}
+          totalPages={totalPages}
+          onPageSizeChange={(newPageSize: any) =>
+            updateFilters({ pageSize: newPageSize })
+          }
+        />
+      </div>
+    </>
   );
 }
