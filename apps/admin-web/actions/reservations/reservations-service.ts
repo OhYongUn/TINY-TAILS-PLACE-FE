@@ -49,3 +49,24 @@ export async function getReservationDetail(
     };
   }
 }
+export async function fetchReservations(params: {
+  date?: string;
+  searchOption?: string;
+  searchQuery?: string;
+  sortOption?: string;
+  page: number;
+}) {
+  const queryParams = new URLSearchParams({
+    ...(params.date && { date: params.date }),
+    ...(params.searchOption && { searchOption: params.searchOption }),
+    ...(params.searchQuery && { searchQuery: params.searchQuery }),
+    ...(params.sortOption && { sortOption: params.sortOption }),
+    page: params.page.toString(),
+  });
+
+  const response = await fetch(`/api/reservations?${queryParams}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch reservations');
+  }
+  return response.json();
+}
