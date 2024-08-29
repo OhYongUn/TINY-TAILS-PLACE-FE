@@ -1,7 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { menuItems } from './SidebarMenu'; // menuItems를 import
 
 export default function MainLayout({
   children,
@@ -10,6 +12,30 @@ export default function MainLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState('');
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const findSelectedMenu = (items: any) => {
+      for (const item of items) {
+        if (item.link === pathname) {
+          return item.name;
+        }
+        if (item.submenu) {
+          const subMenuItem = item.submenu.find(
+            (sub: any) => sub.link === pathname,
+          );
+          if (subMenuItem) {
+            return `${item.name} > ${subMenuItem.name}`;
+          }
+        }
+      }
+      return '';
+    };
+
+    setSelectedMenu(findSelectedMenu(menuItems));
+  }, [pathname]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar
@@ -24,6 +50,7 @@ export default function MainLayout({
         <Header
           setSidebarOpen={setSidebarOpen}
           sidebarCollapsed={sidebarCollapsed}
+          selectedMenu={selectedMenu}
         />
         <main className="flex-1 overflow-auto bg-gray-100 p-4 lg:p-6 mt-16">
           {children}

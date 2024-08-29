@@ -5,8 +5,6 @@ import {
   Mail,
   LogOut,
   Settings,
-  ChevronLeft,
-  ChevronRight,
 } from '@repo/ui/components/ui/lucide-react';
 import { Button } from '@repo/ui/components/ui/button';
 import { logout } from '@app/actions/auth/auth';
@@ -16,16 +14,18 @@ import { useAuthStore } from '@app/store/auth-store';
 export default function Header({
   setSidebarOpen,
   sidebarCollapsed,
+  selectedMenu,
 }: {
   setSidebarOpen: (open: boolean) => void;
   sidebarCollapsed: boolean;
+  selectedMenu: string;
 }) {
   const router = useRouter();
   const { clearAuth } = useAuthStore();
   const handleLogOut = async () => {
     console.log('logout');
     await logout();
-    router.push('/login'); // 로그아웃 성공 후 리다이렉트
+    router.push('/login');
     clearAuth();
   };
   return (
@@ -36,12 +36,13 @@ export default function Header({
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden"
+          className="lg:hidden mr-2"
           onClick={() => setSidebarOpen(true)}
         >
           <Menu className="h-6 w-6" />
           <span className="sr-only">사이드바 열기</span>
         </Button>
+        <span className="text-lg font-semibold">{selectedMenu}</span>
       </div>
       <div className="flex items-center space-x-4">
         <Button variant="ghost" size="icon">
