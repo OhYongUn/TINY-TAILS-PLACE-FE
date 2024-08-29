@@ -30,9 +30,7 @@ export default function RootLayout({
       <body
         className={cn('antialiased', fontHeading.variable, fontBody.variable)}
       >
-        <AuthProvider>
-          <MainLayout>{children}</MainLayout>
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

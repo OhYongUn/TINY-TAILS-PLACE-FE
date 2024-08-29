@@ -32,8 +32,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <Button variant="outline" className="w-full">
             <CalendarDaysIcon className="mr-2" />
             {dateRange?.from
-              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to?.toLocaleDateString() || 'Select end date'}`
-              : 'Select Dates'}
+              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to?.toLocaleDateString() || ''}`
+              : ''}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0">
