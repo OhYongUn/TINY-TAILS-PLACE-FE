@@ -68,7 +68,36 @@ export default function ReservationListTable() {
     console.log(`open ${type} modal for reservation ${id}`);
     // 여기에 각 모달에 대한 로직을 구현합니다.
   };
-
+  const renderStatusButtons = (status: string, id: string) => {
+    switch (status) {
+      case 'CONFIRMED':
+        return (
+          <>
+            <DropdownMenuLabel>상태 변경</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => handleUpdateStatus('CHECKED_IN', id)}
+            >
+              체크인
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        );
+      case 'CHECKED_IN':
+        return (
+          <>
+            <DropdownMenuLabel>상태 변경</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => handleUpdateStatus('CHECKED_OUT', id)}
+            >
+              체크아웃
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        );
+      default:
+        return null;
+    }
+  };
   return (
     <div className="rounded-md border">
       <Table>
@@ -115,35 +144,29 @@ export default function ReservationListTable() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>메뉴</DropdownMenuLabel>
+                    {renderStatusButtons(reservation.status, reservation.id)}
+                    <DropdownMenuLabel>상세 정보</DropdownMenuLabel>
+
                     <DropdownMenuItem
                       onClick={() =>
-                        handleUpdateStatus('CHECKED_IN', reservation.id)
-                      }
-                    >
-                      체크인
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        handleUpdateStatus('CHECKED_OUT', reservation.id)
-                      }
-                    >
-                      체크아웃
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() =>
-                        openDetailModal('예약 정보', reservation.id)
+                        openDetailModal('bookingDetails', reservation.id)
                       }
                     >
                       예약 정보
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() =>
-                        openDetailModal('결제 상세', reservation.id)
+                        openDetailModal('payments', reservation.id)
                       }
                     >
                       결제 상세
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        openDetailModal('histories', reservation.id)
+                      }
+                    >
+                      히스토리
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
