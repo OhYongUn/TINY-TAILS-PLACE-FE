@@ -4,7 +4,7 @@ import '@repo/ui/globals.css';
 import React, { ReactNode } from 'react';
 import { cn } from '@repo/ui/lib/utils';
 import { AuthProvider } from '@app/components/AuthProvider';
-import MainLayout from '@app/components/MainLayout';
+import { AlertDialogProvider } from '@app/components/AlertDialogProvider';
 
 const fontHeading = Inter({
   subsets: ['latin'],
@@ -30,7 +30,9 @@ export default function RootLayout({
       <body
         className={cn('antialiased', fontHeading.variable, fontBody.variable)}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AlertDialogProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </AlertDialogProvider>
       </body>
     </html>
   );
