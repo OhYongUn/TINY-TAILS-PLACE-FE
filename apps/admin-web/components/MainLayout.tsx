@@ -52,7 +52,7 @@ export default function MainLayout({
           sidebarCollapsed={sidebarCollapsed}
           selectedMenu={selectedMenu}
         />
-        <main className="flex-1 overflow-auto bg-gray-100 p-4 lg:p-6 mt-16">
+        <main className="flex-1 overflow-auto bg-gray-100 p-4 lg:p-4 mt-16">
           {children}
         </main>
       </div>

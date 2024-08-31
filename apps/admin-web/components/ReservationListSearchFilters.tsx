@@ -108,7 +108,6 @@ export default function ReservationListSearchFilters({
             <SelectContent>
               <SelectItem value="userName">이름</SelectItem>
               <SelectItem value="phone">전화 번호</SelectItem>
-              <SelectItem value="roomNumber">객실 번호</SelectItem>
               <SelectItem value="bookinNumber">예약 번호</SelectItem>
             </SelectContent>
           </Select>
