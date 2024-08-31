@@ -3,8 +3,13 @@ import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
 import {
   fetchReservations,
+  getReservationDetail,
   updateReservationStatus,
 } from '@app/actions/reservations/reservations-service';
+import {
+  ReservationDetailDto,
+  ReservationDetailType,
+} from '@app/types/reservation/type';
 
 interface ReservationState {
   reservations: any[];
@@ -25,11 +30,18 @@ interface ReservationState {
   setPageSize: (size: string) => void;
   setCurrentPage: (page: number) => void;
   fetchReservationList: () => Promise<void>;
+  isDialogOpen: boolean;
+  selectedReservationId: string | null;
+  reservationDetail: ReservationDetailDto | null;
+  selectedDetailType: ReservationDetailType | null;
   updateStatus: (
     action: string,
     id: string,
   ) => Promise<{ success: boolean; message?: string }>;
   updateFilters: () => void;
+  openDialog: (id: string, detailType: ReservationDetailType) => void;
+  closeDialog: () => void;
+  fetchReservationDetail: (id: string) => Promise<void>;
 }
 
 export const useReservationStore = create<ReservationState>((set, get) => ({
@@ -46,6 +58,10 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
   status: '',
   pageSize: '10',
   currentPage: 1,
+  isDialogOpen: false,
+  selectedReservationId: null,
+  reservationDetail: null,
+  selectedDetailType: null,
   setDateRange: (range) => set({ dateRange: range }),
   setSearchOption: (option) => set({ searchOption: option }),
   setSearchQuery: (query) => set({ searchQuery: query }),
@@ -97,5 +113,47 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
   },
   updateFilters: () => {
     get().fetchReservationList();
+  },
+  openDialog: (id, detailType) => {
+    set({
+      isDialogOpen: true,
+      selectedReservationId: id,
+      selectedDetailType: detailType,
+    });
+    get().fetchReservationDetail(id);
+  },
+  closeDialog: () =>
+    set({
+      isDialogOpen: false,
+      selectedReservationId: null,
+      reservationDetail: null,
+      selectedDetailType: null,
+    }),
+  fetchReservationDetail: async (id: string) => {
+    try {
+      const { selectedDetailType } = get();
+      let types: Array<'all' | ReservationDetailType> | undefined;
+
+      if (selectedDetailType) {
+        if (selectedDetailType === 'payments') {
+          types = ['payments', 'bookingDetails'];
+        } else if (selectedDetailType === 'bookingDetails') {
+          types = ['bookingDetails', 'user', 'roomDetail'];
+        } else {
+          types = [selectedDetailType];
+        }
+      } else {
+        types = ['all'];
+      }
+
+      const response = await getReservationDetail(id, types);
+      if (response.success) {
+        set({ reservationDetail: response.data });
+      } else {
+        console.error('Failed to fetch reservation detail:', response.error);
+      }
+    } catch (error) {
+      console.error('Failed to fetch reservation detail:', error);
+    }
   },
 }));

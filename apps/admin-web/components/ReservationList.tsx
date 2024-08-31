@@ -8,6 +8,7 @@ import ReservationListPagination from './ReservationListPagination';
 import { LoadingOverlay } from './LoadingOverlay';
 import { format } from 'date-fns';
 import { useReservationStore } from '@app/store/reservation-store';
+import { ReservationDetailDialog } from '@app/components/ReservationDetailDialog';
 
 export default function ReservationList() {
   const router = useRouter();
@@ -66,6 +67,7 @@ export default function ReservationList() {
         <ReservationListSearchFilters onUpdateFilters={handleUpdateFilters} />
         <ReservationListTable />
         <ReservationListPagination onUpdateFilters={handleUpdateFilters} />
+        <ReservationDetailDialog />
       </div>
     </>
   );

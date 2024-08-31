@@ -6,3 +6,28 @@ export function formatPhoneNumber(phoneNumber: string) {
   }
   return phoneNumber;
 }
+
+export const formatDate = (
+  dateString: string | null | undefined,
+  type?: string | 'long',
+): string => {
+  if (!dateString) return 'N/A';
+  if (type === 'short') {
+    return new Date(dateString).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+  return new Date(dateString).toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+export const isEmptyObject = (obj: any): boolean => {
+  return obj && Object.keys(obj).length === 0 && obj.constructor === Object;
+};

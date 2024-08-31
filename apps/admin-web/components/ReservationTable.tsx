@@ -8,7 +8,6 @@ import {
   ReservationDetailResponseDto,
 } from '@app/types/reservation/type';
 import { getReservationDetail } from '@app/actions/reservations/reservations-service';
-import ReservationDetail from '@app/components/ReservationDetail';
 
 interface ReservationTableProps {
   currentDate: Date;
@@ -84,14 +83,6 @@ export function ReservationTable({
           </tbody>
         </table>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        {selectedBooking && (
-          <ReservationDetail
-            reservationDetail={selectedBooking}
-            onClose={handleCloseDialog}
-          />
-        )}
-      </Dialog>
     </>
   );
 }

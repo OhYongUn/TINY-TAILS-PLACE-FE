@@ -2,6 +2,7 @@
 import api from '@app/utils/api';
 import {
   ReservationDetailResponseDto,
+  ReservationDetailType,
   ReservationsResponseDto,
 } from '@app/types/reservation/type';
 
@@ -32,11 +33,17 @@ export async function getRoomStatus(
 
 export async function getReservationDetail(
   bookingId: string,
+  types?: Array<'all' | ReservationDetailType>,
 ): Promise<ReservationDetailResponseDto> {
   try {
-    const response = await api.get<ReservationDetailResponseDto>(
-      `admin-bookings/reservation-detail/${bookingId}`,
-    );
+    const params = new URLSearchParams();
+    if (types && types.length > 0) {
+      types.forEach((type) => params.append('types', type));
+    }
+    const queryString = params.toString();
+    const url = `admin-bookings/reservation-detail/${bookingId}${queryString ? `?${queryString}` : ''}`;
+
+    const response = await api.get<ReservationDetailResponseDto>(url);
 
     return response.data;
   } catch (err: any) {

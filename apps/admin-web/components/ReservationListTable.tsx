@@ -20,14 +20,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@repo/ui/components/ui/dropdown-menu';
-import { BookingStatusMap } from '@app/types/reservation/type';
+import {
+  BookingStatusMap,
+  ReservationDetailType,
+} from '@app/types/reservation/type';
 import { formatPhoneNumber } from '@app/utils/utils';
 import { format } from 'date-fns';
 import { useAlert } from '@app/components/AlertDialogProvider';
 import { useReservationStore } from '@app/store/reservation-store';
 
 export default function ReservationListTable() {
-  const { reservations, updateStatus } = useReservationStore();
+  const { reservations, updateStatus, openDialog } = useReservationStore();
   const { showAlert } = useAlert();
 
   const handleUpdateStatus = async (action: string, id: string) => {
@@ -64,9 +67,8 @@ export default function ReservationListTable() {
     }
   };
 
-  const openDetailModal = (type: string, id: string) => {
-    console.log(`open ${type} modal for reservation ${id}`);
-    // 여기에 각 모달에 대한 로직을 구현합니다.
+  const openDetailModal = (type: ReservationDetailType, id: string) => {
+    openDialog(id, type);
   };
   const renderStatusButtons = (status: string, id: string) => {
     switch (status) {
@@ -163,7 +165,7 @@ export default function ReservationListTable() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() =>
-                        openDetailModal('histories', reservation.id)
+                        openDetailModal('statusHistories', reservation.id)
                       }
                     >
                       히스토리
