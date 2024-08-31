@@ -1,7 +1,6 @@
-// ReservationListSearchFilters.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Search } from '@repo/ui/components/ui/lucide-react';
 import { Button } from '@repo/ui/components/ui/button';
 import {
@@ -13,8 +12,6 @@ import {
 } from '@repo/ui/components/ui/select';
 import { Input } from '@repo/ui/components/ui/input';
 import DateRangePicker from './DateRangePicker';
-import { DateRange } from 'react-day-picker';
-import { RadioGroup, RadioGroupItem } from '@repo/ui/components/ui/radio-group';
 import { Label } from '@repo/ui/components/ui/label';
 import {
   CalendarCheck,
@@ -28,58 +25,35 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@repo/ui/components/ui/tooltip';
+import { useReservationStore } from '@app/store/reservation-store';
 
 export default function ReservationListSearchFilters({
-  dateRange,
-  searchOption,
-  searchQuery,
-  sortOption,
-  status,
-  pageSize,
   onUpdateFilters,
-}: any) {
-  const [localDateRange, setLocalDateRange] = useState<DateRange | undefined>(
+}: {
+  onUpdateFilters: () => void;
+}) {
+  const {
     dateRange,
-  );
-  const [localSearchOption, setLocalSearchOption] = useState(
-    searchOption || '',
-  );
-  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || '');
-  const [localSortOption, setLocalSortOption] = useState(
-    sortOption || 'createdAt_desc',
-  );
-  const [localStatusOption, setLocalStatusOption] = useState(status || '');
-  const [localPageSize, setLocalPageSize] = useState(pageSize || '10');
+    searchOption,
+    searchQuery,
+    sortOption,
+    status,
+    pageSize,
+    setDateRange,
+    setSearchOption,
+    setSearchQuery,
+    setSortOption,
+    setStatus,
+    setPageSize,
+  } = useReservationStore();
 
   const handleSearch = () => {
-    onUpdateFilters({
-      dateRange: localDateRange,
-      searchOption: localSearchOption,
-      searchQuery: localSearchQuery,
-      sortOption: localSortOption,
-      status: localStatusOption,
-      pageSize: localPageSize,
-    });
+    onUpdateFilters();
   };
-  const handleStatusChange = (value: string) => {
-    setLocalStatusOption((prev: any) => (prev === value ? '' : value));
-  };
-  useEffect(() => {
-    const Search = () => {
-      onUpdateFilters({
-        dateRange: localDateRange,
-        searchOption: localSearchOption,
-        searchQuery: localSearchQuery,
-        sortOption: localSortOption,
-        status: localStatusOption,
-        pageSize: localPageSize,
-      });
-    };
-    Search();
-  }, [localSortOption, localStatusOption, localPageSize]);
 
-  const handleDateChange = (range: DateRange | undefined) => {
-    setLocalDateRange(range);
+  const handleStatusChange = (value: string) => {
+    setStatus(status === value ? '' : value);
+    onUpdateFilters();
   };
 
   const statusOptions = [
@@ -94,13 +68,18 @@ export default function ReservationListSearchFilters({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div className="flex flex-wrap items-center space-x-2 space-y-2 md:space-y-0">
           <DateRangePicker
-            dateRange={localDateRange}
-            onDateChange={handleDateChange}
+            dateRange={dateRange}
+            onDateChange={(range) => {
+              setDateRange(range);
+              onUpdateFilters();
+            }}
           />
 
           <Select
-            value={localSearchOption}
-            onValueChange={setLocalSearchOption}
+            value={searchOption}
+            onValueChange={(value) => {
+              setSearchOption(value);
+            }}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="검색 옵션" />
@@ -116,8 +95,8 @@ export default function ReservationListSearchFilters({
             type="text"
             placeholder="검색어 입력"
             className="w-[200px]"
-            value={localSearchQuery}
-            onChange={(e) => setLocalSearchQuery(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
 
           <Button onClick={handleSearch}>
@@ -128,11 +107,7 @@ export default function ReservationListSearchFilters({
       </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
         <div className="py-2">
-          <RadioGroup
-            value={localStatusOption}
-            onValueChange={setLocalStatusOption}
-            className="flex flex-wrap gap-4"
-          >
+          <div className="flex flex-wrap gap-4">
             <TooltipProvider>
               {statusOptions.map((option) => (
                 <Tooltip key={option.value}>
@@ -141,7 +116,7 @@ export default function ReservationListSearchFilters({
                       <Label
                         htmlFor={option.value}
                         className={`flex items-center justify-center w-10 h-10 rounded-full border-2 cursor-pointer transition-all ${
-                          localStatusOption === option.value
+                          status === option.value
                             ? 'border-primary bg-primary text-primary-foreground'
                             : 'border-muted bg-background text-muted-foreground hover:border-primary/50 hover:text-primary'
                         }`}
@@ -157,10 +132,16 @@ export default function ReservationListSearchFilters({
                 </Tooltip>
               ))}
             </TooltipProvider>
-          </RadioGroup>
+          </div>
         </div>
         <div className="flex space-x-2">
-          <Select value={localPageSize} onValueChange={setLocalPageSize}>
+          <Select
+            value={pageSize}
+            onValueChange={(value) => {
+              setPageSize(value);
+              onUpdateFilters();
+            }}
+          >
             <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="페이지" />
             </SelectTrigger>
@@ -170,7 +151,13 @@ export default function ReservationListSearchFilters({
               <SelectItem value="50">50</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={localSortOption} onValueChange={setLocalSortOption}>
+          <Select
+            value={sortOption}
+            onValueChange={(value) => {
+              setSortOption(value);
+              onUpdateFilters();
+            }}
+          >
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="정렬" />
             </SelectTrigger>

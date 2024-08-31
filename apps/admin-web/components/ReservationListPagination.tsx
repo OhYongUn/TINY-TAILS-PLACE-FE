@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import {
   Pagination,
   PaginationContent,
@@ -11,19 +10,18 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from '@repo/ui/components/ui/pagination';
+import { useReservationStore } from '@app/store/reservation-store';
 
 export default function ReservationPagination({
-  currentPage,
-  totalPages,
-}: any) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  onUpdateFilters,
+}: {
+  onUpdateFilters: () => void;
+}) {
+  const { currentPage, totalPages, setCurrentPage } = useReservationStore();
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', page.toString());
-    router.push(`${pathname}?${params.toString()}`);
+    setCurrentPage(page);
+    onUpdateFilters();
   };
 
   const getPageNumbers = () => {

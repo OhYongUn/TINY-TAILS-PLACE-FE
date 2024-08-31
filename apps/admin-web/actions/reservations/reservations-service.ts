@@ -85,3 +85,32 @@ export async function fetchReservations(params: {
     throw new Error(err.message || 'An unexpected error occurred');
   }
 }
+
+export async function updateReservationStatus(
+  action: string,
+  bookingId: string,
+) {
+  try {
+    console.log('action', action);
+    console.log('bookingId', bookingId);
+    if (!action || bookingId === '') {
+      throw new Error('알수없는 오류가 발생했습니다 다시 시도해주세요');
+    }
+    const status = action;
+    const response = await api.patch<any>(
+      `admin-bookings/${bookingId}/status`,
+      {
+        status,
+      },
+    );
+    console.log('response', response);
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message || 'Failed to fetch reservations');
+    }
+  } catch (error: any) {
+    console.error('Error updating reservation status:', error);
+    throw new Error(error.message || 'An unexpected error occurred');
+  }
+}
