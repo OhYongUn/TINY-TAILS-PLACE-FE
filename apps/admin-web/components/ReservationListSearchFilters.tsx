@@ -61,7 +61,9 @@ export default function ReservationListSearchFilters({
       pageSize: localPageSize,
     });
   };
-
+  const handleStatusChange = (value: string) => {
+    setLocalStatusOption((prev: any) => (prev === value ? '' : value));
+  };
   useEffect(() => {
     const Search = () => {
       onUpdateFilters({
@@ -144,12 +146,8 @@ export default function ReservationListSearchFilters({
                             ? 'border-primary bg-primary text-primary-foreground'
                             : 'border-muted bg-background text-muted-foreground hover:border-primary/50 hover:text-primary'
                         }`}
+                        onClick={() => handleStatusChange(option.value)}
                       >
-                        <RadioGroupItem
-                          value={option.value}
-                          id={option.value}
-                          className="sr-only"
-                        />
                         <option.icon className="h-5 w-5" />
                       </Label>
                     </div>
