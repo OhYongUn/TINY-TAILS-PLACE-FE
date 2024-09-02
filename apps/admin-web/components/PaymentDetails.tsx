@@ -14,6 +14,9 @@ import {
   paymentStatusMap,
 } from '@app/types/reservation/type';
 import { formatDate } from '@app/utils/utils';
+import { postPaidPayment } from '@app/actions/payments/payments-services';
+import { useReservationStore } from '@app/store/reservation-store';
+import { useAlert } from '@app/components/AlertDialogProvider';
 
 interface PaymentDetailsProps {
   reservationDetail: ReservationDetailDto;
@@ -21,11 +24,22 @@ interface PaymentDetailsProps {
 
 export function PaymentDetails({ reservationDetail }: PaymentDetailsProps) {
   const { payments, bookingDetails } = reservationDetail;
+  const { selectedReservationId, setLoading, fetchReservationDetail } =
+    useReservationStore();
+  const { showAlert } = useAlert();
+
+  const initialPayments = payments.filter(
+    (payment) => payment.type === 'INITIAL',
+  );
+  const additionalPayment = payments.find(
+    (payment) => payment.type === 'ADDITIONAL',
+  );
+
+  const hasAdditionalServices =
+    bookingDetails?.actualEarlyCheckin || bookingDetails?.actualLateCheckout;
 
   const calculateAdditionalFeeAmount = () => {
     if (!bookingDetails) return 0;
-
-    const additionalPayment = payments.find((p) => p.type === 'ADDITIONAL');
     if (!additionalPayment) return 0;
 
     const { actualEarlyCheckin, actualLateCheckout } = bookingDetails;
@@ -38,8 +52,38 @@ export function PaymentDetails({ reservationDetail }: PaymentDetailsProps) {
   };
 
   const additionalFeeAmount = calculateAdditionalFeeAmount();
-  const hasAdditionalServices =
-    bookingDetails?.actualEarlyCheckin || bookingDetails?.actualLateCheckout;
+
+  const handlePostPaidPayment = async (paymentId: string) => {
+    try {
+      setLoading(true);
+      const result = await postPaidPayment(
+        paymentId,
+        parseInt(String(additionalFeeAmount)),
+      );
+
+      if ('success' in result && result.success) {
+        showAlert('성공', result.message, 'success');
+        if (selectedReservationId) {
+          await fetchReservationDetail(selectedReservationId);
+        }
+      } else {
+        showAlert(
+          '실패',
+          result.message || '알 수 없는 오류가 발생했습니다.',
+          'error',
+        );
+      }
+    } catch (error: any) {
+      console.error('Failed to update payment:', error);
+      showAlert(
+        '오류',
+        error.message || '알 수 없는 오류가 발생했습니다.',
+        'error',
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="mt-4">
@@ -50,39 +94,30 @@ export function PaymentDetails({ reservationDetail }: PaymentDetailsProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {payments
-          .filter((payment) => payment.type === 'INITIAL')
-          .map((payment, index) => (
-            <div key={payment.id} className="grid gap-2">
-              <div className="flex justify-between">
-                <span className="font-semibold">금액:</span>
-                <span>{payment.amount.toLocaleString()}원</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold">결제 상태:</span>
-                <span>
-                  {paymentStatusMap[payment.status] || payment.status}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold">결제 방법:</span>
-                <span>
-                  {paymentMethodMap[payment.method] || payment.method}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold">결제 일시:</span>
-                <span>{formatDate(payment.createdAt)}</span>
-              </div>
-              {index <
-                payments.filter((p) => p.type === 'INITIAL').length - 1 && (
-                <Separator />
-              )}
+        {initialPayments.map((payment, index) => (
+          <div key={payment.id} className="grid gap-2">
+            <div className="flex justify-between">
+              <span className="font-semibold">금액:</span>
+              <span>{payment.amount.toLocaleString()}원</span>
             </div>
-          ))}
+            <div className="flex justify-between">
+              <span className="font-semibold">결제 상태:</span>
+              <span>{paymentStatusMap[payment.status] || payment.status}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">결제 방법:</span>
+              <span>{paymentMethodMap[payment.method] || payment.method}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold">결제 일시:</span>
+              <span>{formatDate(payment.createdAt)}</span>
+            </div>
+            {index < initialPayments.length - 1 && <Separator />}
+          </div>
+        ))}
       </CardContent>
 
-      {hasAdditionalServices && additionalFeeAmount > 0 && (
+      {hasAdditionalServices && additionalPayment && (
         <>
           <Separator />
           <Card>
@@ -105,14 +140,32 @@ export function PaymentDetails({ reservationDetail }: PaymentDetailsProps) {
                   <span>승인됨</span>
                 </div>
               )}
+              <div className="flex justify-between">
+                <span className="font-semibold">추가 결제 상태:</span>
+                <span>
+                  {paymentStatusMap[additionalPayment.status] ||
+                    additionalPayment.status}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold">추가 결제 방법:</span>
+                <span>
+                  {paymentMethodMap[additionalPayment.method] ||
+                    additionalPayment.method}
+                </span>
+              </div>
               <div className="flex justify-between mt-2">
                 <span className="font-semibold">추가 요금:</span>
                 <span>{additionalFeeAmount.toLocaleString()}원</span>
               </div>
-              {payments.filter((payment) => payment.type === 'ADDITIONAL')
-                .length === 0 && (
+              {additionalPayment.status !== 'COMPLETED' && (
                 <div className="py-5 mb-2">
-                  <Button className="float-end">추가 결제 하기</Button>
+                  <Button
+                    className="float-end"
+                    onClick={() => handlePostPaidPayment(additionalPayment.id)}
+                  >
+                    추가 결제 하기
+                  </Button>
                 </div>
               )}
             </CardContent>

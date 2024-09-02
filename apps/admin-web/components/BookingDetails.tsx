@@ -49,7 +49,7 @@ export function BookingDetails({ reservationDetail }: BookingDetailsProps) {
           'error',
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to approve booking option:', error);
       showAlert(
         '오류',
