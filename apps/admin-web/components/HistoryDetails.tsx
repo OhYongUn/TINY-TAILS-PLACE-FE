@@ -26,7 +26,7 @@ interface HistoryDetailsProps {
 
 export function HistoryDetails({ reservationDetail }: HistoryDetailsProps) {
   return (
-    <Card className="mt-4">
+    <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <HistoryIcon className="h-5 w-5" />
