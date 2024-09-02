@@ -121,3 +121,26 @@ export async function updateReservationStatus(
     throw new Error(error.message || 'An unexpected error occurred');
   }
 }
+
+export async function approveBookingOption(
+  status: string,
+  bookingDetailId: number,
+) {
+  if (!status || !bookingDetailId) {
+    throw new Error('알수없는 오류가 발생했습니다 다시 시도해주세요');
+  }
+  const data = {
+    bookingDetailId: bookingDetailId,
+    status: status,
+  };
+  try {
+    const response = await api.patch(`admin-bookings/approve-option`, data);
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error(response.data.message || 'Failed to fetch reservations');
+    }
+  } catch (err: any) {
+    throw new Error(err.message || 'An unexpected error occurred');
+  }
+}

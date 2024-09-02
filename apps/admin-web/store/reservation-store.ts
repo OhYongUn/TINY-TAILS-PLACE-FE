@@ -34,6 +34,7 @@ interface ReservationState {
   selectedReservationId: string | null;
   reservationDetail: ReservationDetailDto | null;
   selectedDetailType: ReservationDetailType | null;
+  setLoading: (option: boolean) => void;
   updateStatus: (
     action: string,
     id: string,
@@ -69,6 +70,7 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
   setStatus: (status) => set({ status }),
   setPageSize: (size) => set({ pageSize: size }),
   setCurrentPage: (page) => set({ currentPage: page }),
+  setLoading: (isLoading) => set({ loading: isLoading }),
   fetchReservationList: async () => {
     const {
       dateRange,
@@ -131,6 +133,8 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
     }),
   fetchReservationDetail: async (id: string) => {
     try {
+      set({ loading: true });
+
       const { selectedDetailType } = get();
       let types: Array<'all' | ReservationDetailType> | undefined;
 
@@ -154,6 +158,8 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
       }
     } catch (error) {
       console.error('Failed to fetch reservation detail:', error);
+    } finally {
+      set({ loading: false });
     }
   },
 }));
