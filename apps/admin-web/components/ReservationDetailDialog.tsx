@@ -45,9 +45,6 @@ export function ReservationDetailDialog() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{getDialogTitle()}</DialogTitle>
-        </DialogHeader>
         {renderContent()}
       </DialogContent>
     </Dialog>

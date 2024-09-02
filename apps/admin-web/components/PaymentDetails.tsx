@@ -42,7 +42,7 @@ export function PaymentDetails({ reservationDetail }: PaymentDetailsProps) {
     bookingDetails?.actualEarlyCheckin || bookingDetails?.actualLateCheckout;
 
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCardIcon className="h-5 w-5" />

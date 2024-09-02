@@ -139,8 +139,8 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
           types = ['payments', 'bookingDetails'];
         } else if (selectedDetailType === 'bookingDetails') {
           types = ['bookingDetails', 'user', 'roomDetail'];
-        } else {
-          types = [selectedDetailType];
+        } else if (selectedDetailType == 'statusHistories') {
+          types = ['bookingDetails', 'statusHistories'];
         }
       } else {
         types = ['all'];

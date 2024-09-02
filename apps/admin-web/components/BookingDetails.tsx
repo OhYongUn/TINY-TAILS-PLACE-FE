@@ -21,7 +21,7 @@ export function BookingDetails({ reservationDetail }: BookingDetailsProps) {
   const { base, bookingDetails, user, roomDetail } = reservationDetail;
 
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <HomeIcon className="h-5 w-5" />

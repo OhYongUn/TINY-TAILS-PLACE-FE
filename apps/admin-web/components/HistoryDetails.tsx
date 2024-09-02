@@ -11,6 +11,14 @@ import {
   BookingStatusMap,
 } from '@app/types/reservation/type';
 import { formatDate } from '@app/utils/utils';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@repo/ui/components/ui/table';
 
 interface HistoryDetailsProps {
   reservationDetail: ReservationDetailDto;
@@ -18,32 +26,32 @@ interface HistoryDetailsProps {
 
 export function HistoryDetails({ reservationDetail }: HistoryDetailsProps) {
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <HistoryIcon className="h-5 w-5" />
           예약 히스토리
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-4">
-        {reservationDetail.statusHistories.map((history, index) => (
-          <div key={history.id} className="grid gap-2">
-            <div className="flex justify-between">
-              <span className="font-semibold">상태:</span>
-              <span>{BookingStatusMap[history.status] || history.status}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-semibold">변경 일시:</span>
-              <span>{formatDate(history.createdAt)}</span>
-            </div>
-            {history.reason && (
-              <div className="flex justify-between">
-                <span className="font-semibold">사유:</span>
-                <span>{history.reason}</span>
-              </div>
-            )}
-          </div>
-        ))}
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>상태</TableHead>
+              <TableHead>변경 일시</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {reservationDetail.statusHistories.map((history) => (
+              <TableRow key={history.id}>
+                <TableCell>
+                  {BookingStatusMap[history.status] || history.status}
+                </TableCell>
+                <TableCell>{formatDate(history.createdAt)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
