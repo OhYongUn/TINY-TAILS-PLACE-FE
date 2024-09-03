@@ -89,7 +89,6 @@ export default function ReservationListSearchFilters({
               <SelectItem value="bookinNumber">예약 번호</SelectItem>
             </SelectContent>
           </Select>
-
           <Input
             type="text"
             placeholder="검색어 입력"
@@ -97,7 +96,6 @@ export default function ReservationListSearchFilters({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-
           <Button onClick={handleSearch}>
             <Search className="mr-2 h-4 w-4" />
             검색
