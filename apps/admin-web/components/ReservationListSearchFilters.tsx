@@ -71,7 +71,6 @@ export default function ReservationListSearchFilters({
             dateRange={dateRange}
             onDateChange={(range) => {
               setDateRange(range);
-              onUpdateFilters();
             }}
           />
 

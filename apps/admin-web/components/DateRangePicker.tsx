@@ -9,6 +9,7 @@ import { Calendar } from '@repo/ui/components/ui/calendar';
 import { CalendarDaysIcon } from '@repo/ui/components/ui/icons';
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 interface DateRangePickerProps {
   dateRange: DateRange | undefined;
@@ -32,8 +33,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           <Button variant="outline" className="w-full">
             <CalendarDaysIcon className="mr-2" />
             {dateRange?.from
-              ? `${format(dateRange.from, 'yyyy-MM-dd')} - ${dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : 'Select end date'}`
-              : 'Select Dates'}
+              ? `${format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko })} - ${dateRange.to ? format(dateRange.to, 'yyyy년 MM월 dd일', { locale: ko }) : '종료일 선택'}`
+              : '날짜 선택'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0">
