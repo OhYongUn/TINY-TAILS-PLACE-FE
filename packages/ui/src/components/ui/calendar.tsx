@@ -1,8 +1,10 @@
 import React from 'react';
-import { DayPicker, DateRange } from 'react-day-picker';
+import { DayPicker, DateRange, Formatters } from 'react-day-picker';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { buttonVariants } from '@repo/ui/components/ui/button';
+import { ko } from 'date-fns/locale/ko';
+import { Locale } from 'date-fns';
 
 export type CalendarProps = {
   className?: string;
@@ -30,8 +32,18 @@ function Calendar({
   toDate,
   ...props
 }: CalendarProps) {
+  const formatters = {
+    formatCaption: (month: any, options: any) => {
+      const date = month;
+      const year = date.getFullYear();
+      const monthNum = (date.getMonth() + 1).toString().padStart(2, '0');
+      return `${year}년  ${monthNum}월`;
+    },
+  };
+
   return (
     <DayPicker
+      locale={ko}
       showOutsideDays={showOutsideDays}
       mode="range"
       selected={selected}
@@ -41,6 +53,7 @@ function Calendar({
       modifiersStyles={modifiersStyles}
       fromDate={fromDate}
       toDate={toDate}
+      formatters={formatters} // 여기에 사용자 정의 포맷 함수를 추가합니다.
       className={cn('p-3', className)}
       classNames={{
         months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',

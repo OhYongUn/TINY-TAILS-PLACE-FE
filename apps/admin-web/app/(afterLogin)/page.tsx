@@ -5,7 +5,7 @@ import MainLayout from '@app/components/MainLayout';
 
 export default function Home() {
   return (
-    <MainLayout>
+    <>
       <h1 className="text-2xl font-semibold text-gray-800 mb-4">
         호텔 예약 관리 대시보드
       </h1>
@@ -20,6 +20,6 @@ export default function Home() {
           헤더가 고정되어 있는지 확인해보세요.
         </p>
       ))}
-    </MainLayout>
+    </>
   );
 }

@@ -18,14 +18,14 @@ import {
 } from '@repo/ui/components/ui/collapsible';
 import { useState } from 'react';
 
-const menuItems = [
+export const menuItems = [
   {
     name: '예약 현황',
     icon: Calendar,
     link: '',
     submenu: [
-      { name: '신규 예약', icon: Calendar, link: '/reservations' },
-      { name: '예약 변경', icon: Calendar, link: '/reservations/change' },
+      { name: '객실 현황 ', icon: Calendar, link: '/reservations' },
+      { name: '예약 현황', icon: Calendar, link: '/reservations/list' },
       { name: '예약 취소', icon: Calendar, link: '/reservations/cancel' },
     ],
   },
