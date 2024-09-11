@@ -5,6 +5,8 @@ import React, { ReactNode } from 'react';
 import { cn } from '@repo/ui/lib/utils';
 import { AuthProvider } from '@app/components/AuthProvider';
 import { AlertDialogProvider } from '@app/components/AlertDialogProvider';
+import { QueryClient } from '@tanstack/react-query';
+import QueryClientWrapper from '@app/components/QueryClientWrapper';
 
 const fontHeading = Inter({
   subsets: ['latin'],
@@ -30,9 +32,11 @@ export default function RootLayout({
       <body
         className={cn('antialiased', fontHeading.variable, fontBody.variable)}
       >
-        <AlertDialogProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </AlertDialogProvider>
+        <QueryClientWrapper>
+          <AlertDialogProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </AlertDialogProvider>
+        </QueryClientWrapper>
       </body>
     </html>
   );
