@@ -32,9 +32,9 @@ export const menuItems = [
   {
     name: '사용자 관리',
     icon: Users,
-    link: '/users',
+    link: '',
     submenu: [
-      { name: '고객 목록', icon: Users, link: '/users/customers' },
+      { name: '고객 목록', icon: Users, link: '/users' },
       { name: '고객 정보 수정', icon: UserCog, link: '/users/edit' },
     ],
   },
