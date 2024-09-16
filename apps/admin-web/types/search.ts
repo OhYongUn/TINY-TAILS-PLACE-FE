@@ -7,9 +7,11 @@ export interface SearchParams {
   pageSize: number;
   currentPage: number;
   dateRange: DateRange | undefined;
+  isActive?: Boolean;
+  departmentId?: string | null;
 }
 
-export interface searchResponse<T> {
+export interface SearchResponse<T> {
   success: boolean;
   statusCode: number;
   data: {

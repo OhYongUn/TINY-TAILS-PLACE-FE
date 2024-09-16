@@ -14,6 +14,8 @@ import { Input } from '@repo/ui/components/ui/input';
 import DateRangePicker from './DateRangePicker';
 import { SearchParams } from '@app/types/search';
 import { DateRange } from 'react-day-picker';
+import DepartmentSelect from '@app/components/DepartmentSelect';
+import { Department } from '@app/types/admins/type';
 
 interface SearchOption {
   value: string;
@@ -23,9 +25,11 @@ interface sortOption {
   value: string;
   label: string;
 }
+
 interface SearchFiltersProps {
   searchOptions: SearchOption[];
   sortOptions: sortOption[];
+  departments?: Department[];
   showDateRangePicker?: boolean;
   showSortOption?: boolean;
   StatusFilter?: React.ComponentType<any>;
@@ -36,6 +40,7 @@ interface SearchFiltersProps {
 }
 
 export function SearchFilters({
+  departments,
   searchOptions,
   sortOptions,
   showDateRangePicker = true,
@@ -55,11 +60,15 @@ export function SearchFilters({
   const [localDateRange, setLocalDateRange] = useState<DateRange | undefined>(
     searchParams.dateRange,
   );
+  const [localDepartment, setLocalDepartment] = useState<string | null>(
+    searchParams.departmentId || null,
+  );
 
   useEffect(() => {
     setLocalSearchQuery(searchParams.searchQuery);
     setLocalSearchOption(searchParams.searchOption);
     setLocalDateRange(searchParams.dateRange);
+    setLocalDepartment(searchParams.departmentId || null);
   }, [searchParams]);
 
   const handleSearch = () => {
@@ -67,6 +76,7 @@ export function SearchFilters({
       searchQuery: localSearchQuery,
       searchOption: localSearchOption,
       dateRange: localDateRange,
+      departmentId: localDepartment,
       currentPage: 1,
     });
     onSearch();
@@ -74,6 +84,11 @@ export function SearchFilters({
 
   const handleSortChange = (value: string) => {
     updateSearchParams({ sortOption: value });
+    onSearch();
+  };
+  const handleDepartmentChange = (departmentId: string | null) => {
+    setLocalDepartment(departmentId);
+    updateSearchParams({ departmentId, currentPage: 1 });
     onSearch();
   };
 
@@ -84,6 +99,13 @@ export function SearchFilters({
           <DateRangePicker
             dateRange={localDateRange ?? { from: new Date(), to: new Date() }}
             onDateChange={setLocalDateRange}
+          />
+        )}
+        {departments && (
+          <DepartmentSelect
+            departments={departments}
+            onDepartmentChange={handleDepartmentChange}
+            selectedDepartmentId={localDepartment}
           />
         )}
 

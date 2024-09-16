@@ -41,10 +41,10 @@ export const menuItems = [
   {
     name: '관리자 관리',
     icon: UserCog,
-    link: '/admins',
+    link: '',
     submenu: [
-      { name: '관리자 목록', icon: Users, link: '/admins/list' },
-      { name: '권한 설정', icon: UserCog, link: '/admins/permissions' },
+      { name: '관리자 목록', icon: Users, link: '/admins' },
+      { name: '권한 관리', icon: UserCog, link: '/roles' },
     ],
   },
   {

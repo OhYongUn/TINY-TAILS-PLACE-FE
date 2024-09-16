@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
-import { searchResponse, SearchParams } from '@app/types/search';
+import { SearchResponse, SearchParams } from '@app/types/search';
 
 interface UseSearchResult<T> {
   data: T[];
@@ -18,7 +18,7 @@ interface UseSearchResult<T> {
 
 export function useSearch<T>(
   queryKey: string,
-  queryFn: (params: SearchParams) => Promise<searchResponse<T>>,
+  queryFn: (params: SearchParams) => Promise<SearchResponse<T>>,
 ): UseSearchResult<T> {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -31,9 +31,11 @@ export function useSearch<T>(
       from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
     },
+    departmentId: '',
+    isActive: true,
   });
 
-  const { data, isLoading, error } = useQuery<searchResponse<T>>({
+  const { data, isLoading, error } = useQuery<SearchResponse<T>>({
     queryKey: [queryKey, searchParams],
     queryFn: () => queryFn(searchParams),
     staleTime: 5 * 60 * 1000, // 5분
@@ -61,6 +63,8 @@ export function useSearch<T>(
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
       },
+      departmentId: '',
+      isActive: true,
     });
   }, []);
   return {
