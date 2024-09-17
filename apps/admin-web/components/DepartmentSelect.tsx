@@ -90,21 +90,19 @@ export default function DepartmentSelect({
         </SelectContent>
       </Select>
 
-      {level2Options.length > 0 && (
-        <Select value={level2 || 'all'} onValueChange={handleLevel2Change}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="2차 부서" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">전체</SelectItem>
-            {level2Options.map((dept) => (
-              <SelectItem key={dept.id} value={dept.id}>
-                {dept.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
+      <Select value={level2 || 'all'} onValueChange={handleLevel2Change}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="2차 부서" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">전체</SelectItem>
+          {level2Options.map((dept) => (
+            <SelectItem key={dept.id} value={dept.id}>
+              {dept.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
