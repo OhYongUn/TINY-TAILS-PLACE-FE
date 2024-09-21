@@ -2,7 +2,7 @@
 
 import { SearchParams, SearchResponse } from '@app/types/search';
 import api from '@app/utils/api';
-import { Admin } from '@app/types/admins/type';
+import { Admin, AdminRegistrationData } from '@app/types/admins/type';
 
 export async function searchAdmins(
   params: SearchParams,
@@ -62,5 +62,16 @@ export async function searchAdmins(
     }
   } catch (err: any) {
     throw new Error(err.message || 'An unexpected error occurred');
+  }
+}
+
+export async function registerAdmin(data: AdminRegistrationData) {
+  console.log('data', data);
+  try {
+    const response = await api.post('/auth/admin/register', data);
+    return response.data;
+  } catch (error) {
+    //console.error('Error registering admin:', error);
+    throw new Error('Failed to register admin');
   }
 }

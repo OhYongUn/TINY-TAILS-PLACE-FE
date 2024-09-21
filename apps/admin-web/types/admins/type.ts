@@ -31,3 +31,10 @@ export interface Department {
   parentId: string | null;
   children?: Department[];
 }
+export interface AdminRegistrationData {
+  email: string;
+  password: string;
+  name: string;
+  phone: string;
+  departmentId: string;
+}

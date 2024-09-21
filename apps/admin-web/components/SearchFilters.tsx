@@ -63,12 +63,16 @@ export function SearchFilters({
   const [localDepartment, setLocalDepartment] = useState<string | null>(
     searchParams.departmentId || null,
   );
+  const [localPageSize, setLocalPageSize] = useState(
+    searchParams.pageSize || '10',
+  );
 
   useEffect(() => {
     setLocalSearchQuery(searchParams.searchQuery);
     setLocalSearchOption(searchParams.searchOption);
     setLocalDateRange(searchParams.dateRange);
     setLocalDepartment(searchParams.departmentId || null);
+    setLocalPageSize(searchParams.pageSize || '10');
   }, [searchParams]);
 
   const handleSearch = () => {
@@ -77,6 +81,7 @@ export function SearchFilters({
       searchOption: localSearchOption,
       dateRange: localDateRange,
       departmentId: localDepartment,
+      pageSize: localPageSize,
       currentPage: 1,
     });
     onSearch();
@@ -91,7 +96,11 @@ export function SearchFilters({
     updateSearchParams({ departmentId, currentPage: 1 });
     onSearch();
   };
-
+  const handlePageSizeChange = (value: string) => {
+    setLocalPageSize(value);
+    updateSearchParams({ pageSize: value, currentPage: 1 });
+    onSearch();
+  };
   return (
     <div className="flex flex-col space-y-4 mb-4">
       <div className="flex flex-wrap items-center space-x-2 space-y-2 md:space-y-0">
@@ -108,7 +117,6 @@ export function SearchFilters({
             selectedDepartmentId={localDepartment}
           />
         )}
-
         <Select value={localSearchOption} onValueChange={setLocalSearchOption}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="검색 옵션" />
@@ -121,7 +129,6 @@ export function SearchFilters({
             ))}
           </SelectContent>
         </Select>
-
         <Input
           type="text"
           placeholder="검색어 입력"
@@ -129,34 +136,51 @@ export function SearchFilters({
           value={localSearchQuery}
           onChange={(e) => setLocalSearchQuery(e.target.value)}
         />
-
         <Button onClick={handleSearch} disabled={isLoading}>
           <Search className="mr-2 h-4 w-4" />
           검색
         </Button>
       </div>
 
-      {StatusFilter && <StatusFilter />}
-
-      {showSortOption && (
-        <div className="flex justify-end">
-          <Select
-            value={searchParams.sortOption}
-            onValueChange={handleSortChange}
-          >
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="정렬" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+        <div className="w-full md:w-auto">
+          {StatusFilter && <StatusFilter />}
         </div>
-      )}
+        <div className="flex space-x-2 w-full md:w-auto justify-end">
+          {showSortOption && (
+            <>
+              <Select
+                value={localPageSize}
+                onValueChange={handlePageSizeChange}
+              >
+                <SelectTrigger className="w-[100px]">
+                  <SelectValue placeholder="페이지" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="30">30</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={searchParams.sortOption}
+                onValueChange={handleSortChange}
+              >
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="정렬" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

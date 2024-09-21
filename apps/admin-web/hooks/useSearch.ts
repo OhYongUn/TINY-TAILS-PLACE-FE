@@ -25,7 +25,7 @@ export function useSearch<T>(
     searchQuery: '',
     searchOption: '',
     sortOption: '',
-    pageSize: 10,
+    pageSize: '10',
     currentPage: 1,
     dateRange: {
       from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -57,7 +57,7 @@ export function useSearch<T>(
       searchQuery: '',
       searchOption: '',
       sortOption: '',
-      pageSize: 10,
+      pageSize: '10',
       currentPage: 1,
       dateRange: {
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),

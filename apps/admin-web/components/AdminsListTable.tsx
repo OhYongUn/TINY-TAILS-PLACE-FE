@@ -30,6 +30,7 @@ interface AdminsListTableProps {
 }
 
 export default function AdminsListTable({ list }: AdminsListTableProps) {
+  console.log('list', list);
   const { showAlert } = useAlert();
 
   /*const handleUpdateStatus = async (action: string, id: string) => {
@@ -56,7 +57,13 @@ export default function AdminsListTable({ list }: AdminsListTableProps) {
   /*const openDetailModal = (type: string, id: string) => {
     openUserDialog(id, type);
   };*/
-
+  const getDepartmentName = (department: any): string => {
+    if (typeof department === 'string') return department;
+    if (department && typeof department === 'object' && 'name' in department) {
+      return department.name;
+    }
+    return 'N/A';
+  };
   return (
     <div className="rounded-md border">
       <Table>
@@ -82,7 +89,7 @@ export default function AdminsListTable({ list }: AdminsListTableProps) {
               </TableCell>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.department}</TableCell>
+              <TableCell>{getDepartmentName(user.department)}</TableCell>
               <TableCell>{formatPhoneNumber(user.phone)}</TableCell>
               <TableCell>
                 {format(new Date(user.createdAt), 'yyyy-MM-dd')}
