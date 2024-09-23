@@ -4,12 +4,14 @@ export interface SearchParams {
   searchQuery: string;
   searchOption: string;
   sortOption: string;
-  pageSize: number;
+  pageSize: string;
   currentPage: number;
   dateRange: DateRange | undefined;
+  isActive?: Boolean;
+  departmentId?: string | null;
 }
 
-export interface searchResponse<T> {
+export interface SearchResponse<T> {
   success: boolean;
   statusCode: number;
   data: {

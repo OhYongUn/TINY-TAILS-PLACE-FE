@@ -1,13 +1,12 @@
 'use server';
 
 import { SearchParams, SearchResponse } from '@app/types/search';
-import { User } from '@app/types/users/type';
-import { format } from 'date-fns';
 import api from '@app/utils/api';
+import { Admin, AdminRegistrationData } from '@app/types/admins/type';
 
-export async function searchUsers(
+export async function searchAdmins(
   params: SearchParams,
-): Promise<SearchResponse<User>> {
+): Promise<SearchResponse<Admin>> {
   const {
     searchQuery,
     searchOption,
@@ -15,8 +14,12 @@ export async function searchUsers(
     pageSize,
     currentPage,
     dateRange,
+    isActive,
+    departmentId,
   } = params;
+
   const queryParams = new URLSearchParams();
+
   if (searchQuery) {
     queryParams.set('searchQuery', searchQuery);
   }
@@ -24,7 +27,7 @@ export async function searchUsers(
     queryParams.set('searchOption', searchOption);
   }
   if (sortOption) {
-    queryParams.set('sortOption', sortOption || 'name_asc');
+    queryParams.set('sortOption', sortOption || 'createdAt_desc');
   }
   if (dateRange) {
     if (dateRange.to) {
@@ -40,17 +43,35 @@ export async function searchUsers(
   if (currentPage) {
     queryParams.set('page', currentPage.toString());
   }
+  if (isActive !== undefined) {
+    queryParams.set('isActive', isActive.toString());
+  }
+  if (departmentId) {
+    queryParams.set('departmentId', departmentId);
+  }
+
   try {
-    const response = await api.get<SearchResponse<User>>(
-      `admin-users?${queryParams}`,
+    const response = await api.get<SearchResponse<Admin>>(
+      `admins?${queryParams}`,
     );
 
     if (response.data.success) {
       return response.data;
     } else {
-      throw new Error(response.data.error || 'Failed to fetch reservations');
+      throw new Error(response.data.error || 'Failed to fetch admins');
     }
   } catch (err: any) {
     throw new Error(err.message || 'An unexpected error occurred');
+  }
+}
+
+export async function registerAdmin(data: AdminRegistrationData) {
+  console.log('data', data);
+  try {
+    const response = await api.post('/auth/admin/register', data);
+    return response.data;
+  } catch (error) {
+    //console.error('Error registering admin:', error);
+    throw new Error('Failed to register admin');
   }
 }
